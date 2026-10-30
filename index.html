@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,41 +6,52 @@
 <title>THE LAST NIGHT | General Hospital Onitsha</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#111;color:white;font-family:Arial,sans-serif}
-canvas#game{display:block}
-button{border:1px solid #888;background:#26332d;color:white;border-radius:9px;padding:12px;font-weight:bold}
-button:active{background:#9b632b}
-#menu{position:fixed;inset:0;z-index:20;background:radial-gradient(#303b31,#101612 65%,#050707);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:22px}
-#menu h1{font-size:clamp(38px,9vw,78px);letter-spacing:5px;margin:0;color:#e5e5d8;text-shadow:0 0 25px #9d241b}
-#menu h2{font-size:16px;letter-spacing:3px;color:#d3b68c}
-#menu p{max-width:470px;line-height:1.7;color:#c3c9c0;font-size:14px}
-#start{background:#791d17;padding:16px 25px;margin-top:12px;font-size:16px}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101713;color:#fff;font-family:Arial,sans-serif}
+canvas#game{display:block;touch-action:none}
+button,input{font:inherit}
+button{border:1px solid #9b9d85;background:#26372d;color:#fff;border-radius:9px;padding:11px 14px;font-weight:bold}
+#menu{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at center,#354337,#101812 68%,#050807);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;overflow:auto}
+#menu h1{font-size:clamp(36px,9vw,76px);letter-spacing:4px;margin:0;color:#eee8d5;text-shadow:0 0 24px #9d241b}
+#menu h2{font-size:14px;letter-spacing:3px;color:#d3b68c}
+#menu p{max-width:500px;line-height:1.6;color:#c8cec4;font-size:13px}
+#playerSetup{width:min(330px,90vw);display:grid;gap:9px;margin:8px 0}
+#playerSetup label{text-align:left;color:#e3d5b5;font-size:12px}
+#playerSetup input{width:100%;padding:12px;border:1px solid #788474;border-radius:8px;background:#101a14;color:white}
+#start{background:#791d17;padding:15px 25px;margin-top:8px;font-size:16px}
 #hud{display:none;position:fixed;inset:0;pointer-events:none}
-#top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-#stats{background:#101914dc;border:1px solid #68776c;border-radius:10px;padding:9px;width:min(230px,52vw)}
+#top{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#stats{background:#101914df;border:1px solid #68776c;border-radius:10px;padding:8px;width:min(230px,53vw)}
 .stat{font-size:11px;margin:4px 0;color:#eee}
-.bar{height:9px;background:#343d36;border-radius:9px;overflow:hidden;margin-top:3px}
+.bar{height:8px;background:#343d36;border-radius:9px;overflow:hidden;margin-top:3px}
 .fill{height:100%;width:100%;transition:width .2s}
 #healthFill{background:#d34d43}
 #staminaFill{background:#e5bd48}
-#mapbox{width:145px;height:145px;max-width:39vw;max-height:39vw;background:#111d19eF;border:2px solid #a8b4a3;border-radius:12px;overflow:hidden}
+#mapbox{width:145px;height:145px;max-width:39vw;max-height:39vw;background:#111d19ef;border:2px solid #a8b4a3;border-radius:12px;overflow:hidden}
 #map{width:100%;height:100%}
-#maplegend{position:absolute;right:10px;top:160px;background:#101914dc;padding:7px 9px;border-radius:7px;font-size:10px;line-height:1.6}
+#maplegend{position:absolute;right:10px;top:160px;background:#101914df;padding:7px 9px;border-radius:7px;font-size:10px;line-height:1.6}
 #objective{position:absolute;top:165px;left:10px;background:#101914df;border-left:3px solid #e6bd50;padding:9px;font-size:12px;max-width:48%}
-#inventory{position:absolute;left:10px;bottom:12px;background:#101914df;border:1px solid #56665b;border-radius:9px;padding:8px;font-size:11px;line-height:1.6;max-width:210px}
-#power{position:absolute;top:215px;left:10px;font-size:11px;background:#142019dc;padding:7px;border-radius:7px;max-width:48%}
-#message{position:absolute;top:43%;width:100%;text-align:center;font-size:19px;font-weight:bold;text-shadow:0 2px 6px black;padding:0 15px}
-#danger{position:absolute;inset:0;border:0 solid #ba1717;pointer-events:none;transition:border-width .2s}
-#controls{position:absolute;bottom:15px;right:12px;display:flex;gap:6px;align-items:end}
-#controls button{pointer-events:auto;width:57px;height:57px;padding:2px;font-size:10px;background:#202b25eF}
-#move{position:absolute;bottom:15px;left:12px;display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px;gap:4px}
-#move button{pointer-events:auto;width:48px;height:48px;padding:0;font-size:19px;background:#202b25eF}
+#power{position:absolute;top:215px;left:10px;font-size:11px;background:#142019df;padding:7px;border-radius:7px;max-width:50%}
+#message{position:absolute;top:43%;width:100%;text-align:center;font-size:18px;font-weight:bold;text-shadow:0 2px 7px black;padding:0 15px}
+#danger{position:absolute;inset:0;border:0 solid #ba1717;pointer-events:none}
+#inventory{position:absolute;left:10px;bottom:10px;background:#101914df;border:1px solid #a08c5b;border-radius:9px;padding:8px;font-size:10px;line-height:1.5;max-width:190px}
+#walletButton{position:absolute;left:10px;bottom:112px;pointer-events:auto;background:#66502a;font-size:10px}
+#pickupHint{position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);background:#17251eeb;border:2px solid #d6b66b;border-radius:10px;padding:11px 15px;color:#fff4cf;font-weight:bold;font-size:12px;display:none;white-space:nowrap}
+#walletPanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(340px,90vw);max-height:72vh;overflow:auto;background:#101914f7;border:2px solid #c7a75d;border-radius:14px;padding:17px;display:none;z-index:35;pointer-events:auto}
+#walletPanel h2{color:#e6c879;text-align:center;font-size:19px}
+#walletItems{font-size:13px;line-height:1.8;color:#eee8d5}
+#walletPanel button{margin-top:10px;width:100%}
+#saltButton{position:absolute;right:12px;bottom:90px;pointer-events:auto;background:#75602b;font-size:10px}
+#creatorCredit{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);color:#d6c9a8;font-size:9px;opacity:.8;white-space:nowrap}
+#controls{position:absolute;bottom:14px;right:10px;display:flex;gap:5px;align-items:end}
+#controls button{pointer-events:auto;width:53px;height:53px;padding:2px;font-size:9px;background:#202b25ef}
+#move{position:absolute;bottom:14px;left:10px;display:grid;grid-template-columns:46px 46px 46px;grid-template-rows:46px 46px;gap:4px}
+#move button{pointer-events:auto;width:46px;height:46px;padding:0;font-size:18px;background:#202b25ef}
 #up{grid-column:2}
 #left{grid-column:1;grid-row:2}
 #down{grid-column:2;grid-row:2}
 #right{grid-column:3;grid-row:2}
 #interact{background:#75421b!important}
-#overlay{position:fixed;inset:0;display:none;z-index:15;background:#050908ed;align-items:center;justify-content:center;text-align:center;padding:25px}
+#overlay{position:fixed;inset:0;display:none;z-index:40;background:#050908ed;align-items:center;justify-content:center;text-align:center;padding:25px}
 #overlay div{max-width:400px}
 #overlay h2{font-size:35px}
 #overlay button{margin-top:15px;padding:14px 25px}
@@ -53,8 +63,9 @@ button:active{background:#9b632b}
 #maplegend{top:125px;font-size:9px}
 #objective{top:130px}
 #power{top:190px}
-#inventory{max-width:155px;font-size:10px}
-#controls button{width:49px;height:52px;font-size:9px}
+#inventory{max-width:145px;font-size:9px}
+#controls button{width:46px;height:49px;font-size:8px}
+#walletButton{bottom:105px}
 }
 </style>
 </head>
@@ -63,20 +74,24 @@ button:active{background:#9b632b}
 <div id="menu">
 <h1>THE LAST NIGHT</h1>
 <h2>GENERAL HOSPITAL ONITSHA</h2>
-<p>ONITSHA, ANAMBRA STATE — 2:13 AM<br><br>
-The generator has stopped. The hospital is in darkness.
-Something is hunting inside the building.<br><br>
-Find the pharmacy key, collect supplies and escape alive.
-</p>
-<p style="color:#d5b879">A NIGERIAN SURVIVAL HORROR EXPERIENCE</p>
+<p>ONITSHA, ANAMBRA STATE — 2:13 AM<br>
+The generator has stopped. Something is hunting inside the hospital.
+Find the pharmacy key, gather supplies and escape alive.</p>
+<div id="playerSetup">
+<label for="playerName">YOUR PLAYER NAME</label>
+<input id="playerName" maxlength="18" placeholder="Enter your name">
+<label for="playerAge">YOUR AGE</label>
+<input id="playerAge" type="number" min="1" max="120" placeholder="Enter your age">
+</div>
 <button id="start">ENTER THE HOSPITAL</button>
-<p>WASD: Move | Mouse: Look | SHIFT: Run | E: Interact | F: Flashlight</p>
+<p style="color:#d5b879">A NIGERIAN SURVIVAL HORROR EXPERIENCE</p>
+<p>WASD: Move | Mouse: Look | SHIFT: Run | E: Collect / Use | F: Flashlight</p>
 </div>
 
 <div id="hud">
 <div id="top">
 <div id="stats">
-<div class="stat">❤️ HEALTH <span id="healthText">100</span>%</div>
+<div class="stat"><span id="playerLabel">PLAYER</span> · ❤️ HEALTH <span id="healthText">100</span>%</div>
 <div class="bar"><div class="fill" id="healthFill"></div></div>
 <div class="stat">⚡ STAMINA <span id="staminaText">100</span>%</div>
 <div class="bar"><div class="fill" id="staminaFill"></div></div>
@@ -84,12 +99,20 @@ Find the pharmacy key, collect supplies and escape alive.
 </div>
 <div id="mapbox"><canvas id="map" width="220" height="220"></canvas></div>
 </div>
-<div id="maplegend">🔵 You<br>🟡 Key<br>🔴 Monster<br>🟢 Supplies</div>
+<div id="maplegend">🔵 You · 🟡 Key<br>🔴 Hunters · 🟢 Food<br>🟣 Holy items · 🟠 Cane</div>
 <div id="objective">OBJECTIVE: Find the pharmacy key</div>
 <div id="power"></div>
 <div id="message"></div>
-<div id="inventory">🎒 INVENTORY<br><span id="items">Empty</span></div>
 <div id="danger"></div>
+<div id="inventory">🎒 <span id="ownerInventory">PLAYER</span>'S INVENTORY<br><span id="items">Empty</span></div>
+<button id="walletButton">🎒 OPEN WALLET</button>
+<button id="saltButton">🧂 SALT (3)</button>
+<div id="pickupHint">PRESS E / TAP USE TO COLLECT</div>
+<div id="walletPanel">
+<h2 id="walletTitle">SURVIVAL WALLET</h2>
+<div id="walletItems">Empty</div>
+<button id="closeWallet">CLOSE WALLET</button>
+</div>
 <div id="move">
 <button id="up">▲</button>
 <button id="left">◀</button>
@@ -101,6 +124,7 @@ Find the pharmacy key, collect supplies and escape alive.
 <button id="flash">LIGHT</button>
 <button id="interact">USE</button>
 </div>
+<div id="creatorCredit">Created by Mica.Anikamadu</div>
 </div>
 
 <div id="overlay">
@@ -114,14 +138,11 @@ Find the pharmacy key, collect supplies and escape alive.
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-// ---------------- SCENE ----------------
-
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x303a34);
-scene.fog=new THREE.Fog(0x303a34,24,58);
-
+scene.fog=new THREE.Fog(0x303a34,27,65);
 const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
-camera.position.set(0,1.7,8);
+camera.position.set(0,1.7,18);
 
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
@@ -129,39 +150,40 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.35;
-document.body.appendChild(renderer.domElement);
+renderer.toneMappingExposure=1.3;
 renderer.domElement.id='game';
+document.body.appendChild(renderer.domElement);
 
-scene.add(new THREE.HemisphereLight(0xdce6cf,0x42473e,1.45));
-scene.add(new THREE.AmbientLight(0xffffff,.55));
+scene.add(new THREE.HemisphereLight(0xdce6cf,0x42473e,1.4));
+scene.add(new THREE.AmbientLight(0xffffff,.45));
 
-const flashlight=new THREE.SpotLight(0xfff0cf,110,28,.42,.45,1.1);
+const flashlight=new THREE.SpotLight(0xfff0cf,115,30,.43,.45,1.1);
 flashlight.castShadow=true;
 scene.add(flashlight,flashlight.target);
 
 const obstacles=[];
 const mats={
- wall:new THREE.MeshStandardMaterial({color:0x898b79,roughness:1}),
- floor:new THREE.MeshStandardMaterial({color:0x666a5e,roughness:1}),
- ceiling:new THREE.MeshStandardMaterial({color:0x777a70}),
- metal:new THREE.MeshStandardMaterial({color:0x626d68,metalness:.35,roughness:.65}),
- wood:new THREE.MeshStandardMaterial({color:0x59452f}),
- white:new THREE.MeshStandardMaterial({color:0xc3c2ad}),
- dark:new THREE.MeshStandardMaterial({color:0x080b0a}),
- red:new THREE.MeshStandardMaterial({color:0x4b1110})
+wall:new THREE.MeshStandardMaterial({color:0x898b79}),
+floor:new THREE.MeshStandardMaterial({color:0x666a5e}),
+ceiling:new THREE.MeshStandardMaterial({color:0x777a70}),
+metal:new THREE.MeshStandardMaterial({color:0x626d68,metalness:.35,roughness:.65}),
+wood:new THREE.MeshStandardMaterial({color:0x59452f}),
+white:new THREE.MeshStandardMaterial({color:0xc3c2ad}),
+dark:new THREE.MeshStandardMaterial({color:0x080b0a}),
+red:new THREE.MeshStandardMaterial({color:0x710d19}),
+skin:new THREE.MeshStandardMaterial({color:0xd4a17d}),
+hair:new THREE.MeshStandardMaterial({color:0x17110f,roughness:1})
 };
 
 function box(x,y,z,w,h,d,mat,collision=true){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
- m.position.set(x,y,z);
- m.castShadow=true;m.receiveShadow=true;
- scene.add(m);
- if(collision)obstacles.push({x,z,w,d});
- return m;
+const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+m.position.set(x,y,z);
+m.castShadow=true;
+m.receiveShadow=true;
+scene.add(m);
+if(collision)obstacles.push({x,z,w,d});
+return m;
 }
-
-// ---------------- HOSPITAL BUILDING ----------------
 
 box(0,-.15,0,28,.3,44,mats.floor,false);
 box(0,3.3,0,28,.3,44,mats.ceiling,false);
@@ -170,42 +192,37 @@ box(14,1.5,0,.3,3,44,mats.wall);
 box(0,1.5,-22,28,3,.3,mats.wall);
 box(0,1.5,22,28,3,.3,mats.wall);
 
-// Main corridor partitions and room openings
 function longWall(x,gaps){
- let start=-22;
- for(const gap of gaps){
-  if(gap[0]>start)box(x,1.5,(start+gap[0])/2,.25,3,gap[0]-start,mats.wall);
-  start=gap[1];
- }
- if(start<22)box(x,1.5,(start+22)/2,.25,3,22-start,mats.wall);
+let start=-22;
+for(const gap of gaps){
+if(gap[0]>start)box(x,1.5,(start+gap[0])/2,.25,3,gap[0]-start,mats.wall);
+start=gap[1];
+}
+if(start<22)box(x,1.5,(start+22)/2,.25,3,22-start,mats.wall);
 }
 const gaps=[[-20,-17],[-13,-10],[-6,-3],[1,4],[8,11],[15,18]];
 longWall(-3,gaps);
 longWall(3,gaps);
 
 function crossWall(z,leftGap,rightGap){
- box((-14+leftGap[0])/2,1.5,z,leftGap[0]+14,3,.25,mats.wall);
- box((leftGap[1]+3)/2,1.5,z,3-leftGap[1],3,.25,mats.wall);
- box((3+rightGap[0])/2,1.5,z,rightGap[0]-3,3,.25,mats.wall);
- box((rightGap[1]+14)/2,1.5,z,14-rightGap[1],3,.25,mats.wall);
+box((-14+leftGap[0])/2,1.5,z,leftGap[0]+14,3,.25,mats.wall);
+box((leftGap[1]+3)/2,1.5,z,3-leftGap[1],3,.25,mats.wall);
+box((3+rightGap[0])/2,1.5,z,rightGap[0]-3,3,.25,mats.wall);
+box((rightGap[1]+14)/2,1.5,z,14-rightGap[1],3,.25,mats.wall);
 }
-for(const z of [-15,-8,-1,6,13,20]){
- crossWall(z,[-8,-6],[6,8]);
-}
+for(const z of [-15,-8,-1,6,13,20])crossWall(z,[-8,-6],[6,8]);
 
-// Department signboards
 function sign(text,x,y,z,rotation=0){
- const c=document.createElement('canvas');
- c.width=512;c.height=128;
- const ctx=c.getContext('2d');
- ctx.fillStyle='#254333';ctx.fillRect(0,0,512,128);
- ctx.strokeStyle='#e6dfc6';ctx.lineWidth=7;ctx.strokeRect(5,5,502,118);
- ctx.fillStyle='white';ctx.font='bold 36px Arial';
- ctx.textAlign='center';ctx.textBaseline='middle';
- ctx.fillText(text,256,65);
- const texture=new THREE.CanvasTexture(c);
- const m=new THREE.Mesh(new THREE.PlaneGeometry(3,.75),new THREE.MeshBasicMaterial({map:texture}));
- m.position.set(x,y,z);m.rotation.y=rotation;scene.add(m);
+const c=document.createElement('canvas');
+c.width=512;c.height=128;
+const q=c.getContext('2d');
+q.fillStyle='#254333';q.fillRect(0,0,512,128);
+q.strokeStyle='#e6dfc6';q.lineWidth=7;q.strokeRect(5,5,502,118);
+q.fillStyle='white';q.font='bold 36px Arial';
+q.textAlign='center';q.textBaseline='middle';
+q.fillText(text,256,65);
+const mesh=new THREE.Mesh(new THREE.PlaneGeometry(3,.75),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c)}));
+mesh.position.set(x,y,z);mesh.rotation.y=rotation;scene.add(mesh);
 }
 sign('GENERAL HOSPITAL ONITSHA',0,2.6,19.8);
 sign('RECEPTION / REGISTRATION',0,2.6,12,Math.PI);
@@ -216,440 +233,1065 @@ sign('FEMALE WARD',3.2,2.5,-12,-Math.PI/2);
 sign('LABORATORY',-3.2,2.5,-19,Math.PI/2);
 sign('PHARMACY',3.2,2.5,-19,-Math.PI/2);
 
-// Reception desk
-box(0,.65,10,4,.9,1,mats.wood);
-box(0,1.15,10,.4,.12,.12,mats.metal);
-
-// Waiting room chairs
 for(const z of [13,15]){
- for(const x of [-1.7,1.7]){
-  box(x,.48,z,.75,.12,.75,mats.metal);
-  box(x,.9,z+.3,.75,.75,.12,mats.metal,false);
- }
+for(const x of [-1.7,1.7]){
+box(x,.48,z,.75,.12,.75,mats.metal);
+box(x,.9,z+.3,.75,.75,.12,mats.metal,false);
 }
-
-// Hospital beds
+}
 function bed(x,z){
- box(x,.5,z,1.8,.18,2,mats.metal);
- box(x,.68,z,1.6,.12,1.7,mats.white,false);
- box(x,.87,z-.85,1.8,.38,.12,mats.white,false);
- for(const dx of [-.7,.7])for(const dz of [-.7,.7]){
-  box(x+dx,.23,z+dz,.07,.46,.07,mats.metal,false);
- }
+box(x,.5,z,1.8,.18,2,mats.metal);
+box(x,.68,z,1.6,.12,1.7,mats.white,false);
+box(x,.87,z-.85,1.8,.38,.12,mats.white,false);
+for(const dx of [-.7,.7])for(const dz of [-.7,.7])
+box(x+dx,.23,z+dz,.07,.46,.07,mats.metal,false);
 }
-bed(-8,-4);bed(-11,-4);
-bed(8,-11);bed(11,-11);
-bed(-8,3);bed(11,3);
+bed(-8,-4);bed(-11,-4);bed(8,-11);bed(11,-11);bed(-8,3);bed(11,3);
 
-// Cabinets
 box(-12,1,-3,1,2,.8,mats.metal);
 box(12,1,-10,1,2,.8,mats.metal);
 box(-12,.7,-18,1.1,1.4,.8,mats.metal);
 box(11,.7,-17,1.2,1.4,.8,mats.metal);
-
-// Generator room equipment
 box(10,.8,16,2,1.6,1.5,mats.metal);
 box(10,1.7,16,1.5,.15,1.1,mats.dark);
-sign('GENERATOR ROOM',10,2.5,14.8);
 
-// Emergency ceiling lamps
 const lamps=[];
 for(let z=18;z>-21;z-=4){
- const l=new THREE.PointLight(0xffe8bd,2.1,9);
- l.position.set(0,2.8,z);
- scene.add(l);lamps.push(l);
- const bulb=new THREE.Mesh(new THREE.BoxGeometry(.8,.08,.35),
- new THREE.MeshBasicMaterial({color:0xffe6a5}));
- bulb.position.set(0,3,z);scene.add(bulb);
+const l=new THREE.PointLight(0xffe8bd,1.9,9);
+l.position.set(0,2.8,z);scene.add(l);lamps.push(l);
+const b=new THREE.Mesh(new THREE.BoxGeometry(.8,.08,.35),new THREE.MeshBasicMaterial({color:0xffe6a5}));
+b.position.set(0,3,z);scene.add(b);
 }
-
-// Windows
-for(const z of [-18,-11,-4,3,10,17]){
- for(const x of [-13.8,13.8]){
-  const w=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),
-  new THREE.MeshBasicMaterial({color:0x253d42}));
-  w.position.set(x,2,z);
-  w.rotation.y=x<0?Math.PI/2:-Math.PI/2;
-  scene.add(w);
- }
-}
-
-// ---------------- EXIT ----------------
-
 const exitDoor=box(0,1.5,21.7,2.4,2.8,.3,mats.metal);
-
-// ---------------- COLLECTIBLES ----------------
-
-function glowingItem(x,z,color,label){
- const group=new THREE.Group();
- const orb=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),
- new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.8}));
- orb.position.y=.65;group.add(orb);
- const light=new THREE.PointLight(color,2.3,4);
- light.position.y=.8;group.add(light);
- const base=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,.08,16),
- new THREE.MeshStandardMaterial({color:0x454b43}));
- base.position.y=.05;group.add(base);
- group.position.set(x,0,z);
- scene.add(group);
- return {group,x,z,label};
-}
-
-const key=glowingItem(10,-18,0xffd23e,'PHARMACY KEY');
-const items=[
- {data:glowingItem(-10,4,0x57e4a0,'OKPA + COKE'),type:'strength',taken:false},
- {data:glowingItem(10,-5,0xffa64d,'MAMA TOLU MOI MOI'),type:'speed',taken:false},
- {data:glowingItem(-10,-17,0xb38aff,'AGBO JEDI'),type:'invisibility',taken:false}
-];
-
-// ---------------- MONSTER ----------------
-
-const monster=new THREE.Group();
-const body=new THREE.Mesh(new THREE.BoxGeometry(.8,1.5,.55),mats.dark);
-body.position.y=.95;monster.add(body);
-const head=new THREE.Mesh(new THREE.SphereGeometry(.35,16,12),
-new THREE.MeshStandardMaterial({color:0x292322}));
-head.position.y=1.9;monster.add(head);
-for(const x of [-.15,.15]){
- const eye=new THREE.Mesh(new THREE.SphereGeometry(.06,8,8),
- new THREE.MeshBasicMaterial({color:0xff0000}));
- eye.position.set(x,1.95,-.3);monster.add(eye);
-}
-monster.position.set(-10,0,-4);
-scene.add(monster);
-
-// ---------------- GAME STATE ----------------
+ let playerName='PLAYER',playerAge='';
+const inventory=[];
 
 let started=false,hasKey=false,gameOver=false,won=false;
-let health=100,stamina=100;
-let yaw=0,pitch=0,lightOn=true,running=false;
-let invisible=0,speedBoost=0;
-let strengthBoost=0;
-const pressed={},touch={};
-const inventory=[];
-const clock=new THREE.Clock();
-let messageTime=0;
-let damageCooldown=0;
+let health=100,stamina=100,yaw=0,pitch=0;
+let lightOn=true,running=false;
 
-function say(text,time=2.5){
- document.getElementById('message').textContent=text;
+let invisible=0,speedBoost=0,slowMonsters=0;
+let holyTime=0,stunTime=0,saltTime=0;
+let damageCooldown=0,messageTime=0;
+let saltUses=3;
+
+const pressed={},touch={},clock=new THREE.Clock();
+
+function say(t,time=2.5){
+ document.getElementById('message').textContent=t;
  messageTime=time;
 }
 
+function audioTone(freq=180,duration=.12,type='sine',volume=.035){
+ try{
+  const ac=audioTone.ac||(audioTone.ac=new (window.AudioContext||window.webkitAudioContext)());
+  if(ac.state==='suspended')ac.resume();
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;
+  o.frequency.value=freq;
+  g.gain.setValueAtTime(volume,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+duration);
+  o.connect(g);
+  g.connect(ac.destination);
+  o.start();
+  o.stop(ac.currentTime+duration);
+ }catch(e){}
+}
+
+function speakOpening(){
+ if(!('speechSynthesis'in window))return;
+ const u=new SpeechSynthesisUtterance(
+  'Ah ah! Wetin be this? Where am I? Which kind place be this?'
+ );
+ u.lang='en-NG';
+ u.rate=.88;
+ u.pitch=1.02;
+ window.speechSynthesis.speak(u);
+}
+
 function startGame(){
+ const n=document.getElementById('playerName').value.trim();
+ const a=document.getElementById('playerAge').value.trim();
+
+ if(!n){
+  alert('Please enter your player name first.');
+  return;
+ }
+
+ if(!a||Number(a)<1||Number(a)>120){
+  alert('Please enter a valid age.');
+  return;
+ }
+
+ playerName=n;
+ playerAge=a;
+
+ document.getElementById('playerLabel').textContent=playerName.toUpperCase();
+ document.getElementById('ownerInventory').textContent=playerName.toUpperCase();
+ document.getElementById('walletTitle').textContent=playerName.toUpperCase()+'’S SURVIVAL WALLET';
+
  started=true;
  document.getElementById('menu').style.display='none';
  document.getElementById('hud').style.display='block';
+
  if(matchMedia('(pointer:fine)').matches){
- renderer.domElement.requestPointerLock?.();
+  renderer.domElement.requestPointerLock?.();
  }
- say('WELCOME TO GENERAL HOSPITAL ONITSHA.',4);
+
+ say('Ah ah! Wetin be this? Where am I? Which kind place be this?',5);
+ speakOpening();
 }
+
 document.getElementById('start').onclick=startGame;
 
-// Keyboard
+document.getElementById('walletButton').onclick=()=>{
+ document.getElementById('walletPanel').style.display='block';
+ renderWallet();
+};
+
+document.getElementById('closeWallet').onclick=()=>{
+ document.getElementById('walletPanel').style.display='none';
+};
+
+function renderWallet(){
+ const el=document.getElementById('walletItems');
+ el.innerHTML=inventory.length
+  ?inventory.map(x=>'• '+x).join('<br>')
+  :'Your wallet is empty. Find supplies around the hospital.';
+}
+
+function updateInventory(){
+ document.getElementById('items').textContent=
+  inventory.length?inventory.join(' · '):'Empty';
+ renderWallet();
+}
+
 document.addEventListener('keydown',e=>{
  pressed[e.code]=true;
+
  if(e.code==='KeyF')toggleLight();
  if(e.code==='KeyE')interact();
- if(e.code==='ShiftLeft'||e.code==='ShiftRight')running=true;
-});
-document.addEventListener('keyup',e=>{
- pressed[e.code]=false;
- if(e.code==='ShiftLeft'||e.code==='ShiftRight')running=false;
+ if(e.code==='KeyQ')useCane();
+ if(e.code==='KeyR')useHolyWater();
+ if(e.code==='KeyT')useBlood();
+ if(e.code==='Escape')document.getElementById('walletPanel').style.display='none';
+
+ if(e.code.startsWith('Shift'))running=true;
 });
 
-// Mouse look
+document.addEventListener('keyup',e=>{
+ pressed[e.code]=false;
+ if(e.code.startsWith('Shift'))running=false;
+});
+
 document.addEventListener('mousemove',e=>{
  if(document.pointerLockElement===renderer.domElement){
- yaw-=e.movementX*.002;
- pitch-=e.movementY*.002;
- pitch=Math.max(-1.25,Math.min(1.25,pitch));
+  yaw-=e.movementX*.002;
+  pitch-=e.movementY*.002;
+  pitch=Math.max(-1.25,Math.min(1.25,pitch));
  }
 });
 
-// Touch look
 let lastX=null,lastY=null;
+
 renderer.domElement.addEventListener('touchstart',e=>{
- lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+ lastX=e.touches[0].clientX;
+ lastY=e.touches[0].clientY;
 },{passive:true});
+
 renderer.domElement.addEventListener('touchmove',e=>{
  if(!started||lastX===null)return;
- const x=e.touches[0].clientX,y=e.touches[0].clientY;
+
+ const x=e.touches[0].clientX;
+ const y=e.touches[0].clientY;
+
  yaw-=(x-lastX)*.006;
  pitch-=(y-lastY)*.006;
+
  pitch=Math.max(-1.25,Math.min(1.25,pitch));
- lastX=x;lastY=y;
+
+ lastX=x;
+ lastY=y;
 },{passive:true});
+
 renderer.domElement.addEventListener('touchend',()=>{
- lastX=null;lastY=null;
+ lastX=null;
+ lastY=null;
 });
 
-// Touch buttons
 function bind(id,name){
  const b=document.getElementById(id);
+
  b.addEventListener('pointerdown',e=>{
- e.preventDefault();touch[name]=true;
+  e.preventDefault();
+  touch[name]=true;
  });
- b.addEventListener('pointerup',()=>touch[name]=false);
- b.addEventListener('pointerleave',()=>touch[name]=false);
- b.addEventListener('pointercancel',()=>touch[name]=false);
+
+ ['pointerup','pointerleave','pointercancel'].forEach(ev=>{
+  b.addEventListener(ev,()=>touch[name]=false);
+ });
 }
-bind('up','forward');bind('down','back');
-bind('left','left');bind('right','right');
-document.getElementById('run').addEventListener('pointerdown',()=>running=true);
-document.getElementById('run').addEventListener('pointerup',()=>running=false);
-document.getElementById('run').addEventListener('pointerleave',()=>running=false);
+
+bind('up','forward');
+bind('down','back');
+bind('left','left');
+bind('right','right');
+
+document.getElementById('run').addEventListener('pointerdown',()=>{
+ running=true;
+});
+
+['pointerup','pointerleave','pointercancel'].forEach(ev=>{
+ document.getElementById('run').addEventListener(ev,()=>running=false);
+});
+
 document.getElementById('flash').onclick=toggleLight;
 document.getElementById('interact').onclick=interact;
 
 function toggleLight(){
  lightOn=!lightOn;
- flashlight.intensity=lightOn?110:0;
+ flashlight.intensity=lightOn?115:0;
  document.getElementById('lightText').textContent=lightOn?'ON':'OFF';
  say(lightOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1);
 }
 
-// ---------------- COLLISION ----------------
-
 function blocked(x,z){
  if(x<-13||x>13||z<-21||z>21)return true;
+
  for(const o of obstacles){
- if(Math.abs(x-o.x)<o.w/2+.38&&Math.abs(z-o.z)<o.d/2+.38)return true;
+  if(
+   Math.abs(x-o.x)<o.w/2+.38&&
+   Math.abs(z-o.z)<o.d/2+.38
+  )return true;
  }
+
  return false;
 }
 
-// ---------------- INTERACTIONS ----------------
+/* COLLECTIBLE OBJECTS */
 
-function nearestItem(){
- let best=null,bestDist=2.2;
- if(!hasKey){
- const d=Math.hypot(camera.position.x-key.x,camera.position.z-key.z);
- if(d<bestDist){best={type:'key',data:key};bestDist=d;}
- }
- for(const item of items){
- if(item.taken)continue;
- const d=Math.hypot(camera.position.x-item.data.x,camera.position.z-item.data.z);
- if(d<bestDist){best=item;bestDist=d;}
- }
- return best;
-}
+function makePickup(x,z,label,type,color){
+ const g=new THREE.Group();
 
-function interact(){
- if(!started||gameOver||won)return;
- const found=nearestItem();
- if(found){
- if(found.type==='key'){
- hasKey=true;
- scene.remove(key.group);
- document.getElementById('objective').textContent='OBJECTIVE: Escape through the main entrance';
- say('PHARMACY KEY FOUND! FIND THE MAIN EXIT!',4);
+ const mat=new THREE.MeshStandardMaterial({
+  color,
+  roughness:.55,
+  metalness:.1
+ });
+
+ if(type==='chalice'){
+  const cup=new THREE.Mesh(
+   new THREE.CylinderGeometry(.18,.12,.35,16,1,true),
+   new THREE.MeshStandardMaterial({
+    color:0xe3b83d,
+    metalness:.8,
+    roughness:.25
+   })
+  );
+  cup.position.y=.55;
+  g.add(cup);
+
+  const stem=new THREE.Mesh(
+   new THREE.CylinderGeometry(.045,.045,.22,12),mat
+  );
+  stem.position.y=.28;
+  g.add(stem);
+
+  const foot=new THREE.Mesh(
+   new THREE.CylinderGeometry(.17,.17,.06,16),mat
+  );
+  foot.position.y=.15;
+  g.add(foot);
+
+ }else if(type==='bottle'){
+  const b=new THREE.Mesh(
+   new THREE.CylinderGeometry(.13,.16,.58,14),mat
+  );
+  b.position.y=.42;
+  g.add(b);
+
+  const cap=new THREE.Mesh(
+   new THREE.CylinderGeometry(.07,.07,.09,12),
+   new THREE.MeshStandardMaterial({color:0xd9d3b8})
+  );
+  cap.position.y=.76;
+  g.add(cap);
+
+ }else if(type==='cane'){
+  const c=new THREE.Mesh(
+   new THREE.CylinderGeometry(.045,.045,.95,10),mat
+  );
+  c.position.y=.5;
+  g.add(c);
+
+  const hook=new THREE.Mesh(
+   new THREE.TorusGeometry(.13,.04,8,16,Math.PI),mat
+  );
+  hook.rotation.z=Math.PI;
+  hook.position.set(0,1,0);
+  g.add(hook);
+
+ }else if(type==='food'){
+  const plate=new THREE.Mesh(
+   new THREE.CylinderGeometry(.3,.3,.06,20),
+   new THREE.MeshStandardMaterial({color:0xe8e3d3})
+  );
+  plate.position.y=.08;
+  g.add(plate);
+
+  const food=new THREE.Mesh(
+   new THREE.SphereGeometry(.23,14,10),
+   new THREE.MeshStandardMaterial({color:0xd5a64c})
+  );
+  food.scale.set(1,.55,.8);
+  food.position.y=.25;
+  g.add(food);
+
+  if(label.includes('COKE')){
+   const bottle=new THREE.Mesh(
+    new THREE.CylinderGeometry(.09,.11,.48,12),
+    new THREE.MeshStandardMaterial({color:0x9a1712})
+   );
+   bottle.position.set(.22,.32,.05);
+   g.add(bottle);
+  }
+
  }else{
- const item=found.data;
- found.taken=true;
- scene.remove(item.group);
- inventory.push(item.label);
- if(found.type==='strength'){
- health=Math.min(100,health+25);
- stamina=100;
- strengthBoost=15;
- say('OKPA + COKE! STRENGTH AND STAMINA RESTORED!',3);
- }else if(found.type==='speed'){
- speedBoost=25;
- say('MAMA TOLU MOI MOI! SPEED BOOST ACTIVATED!',3);
- }else if(found.type==='invisibility'){
- invisible=15;
- say('AGBO JEDI! YOU ARE INVISIBLE FOR 15 SECONDS!',3);
- }
- updateInventory();
- }
- return;
- }
- if(Math.hypot(camera.position.x-exitDoor.position.x,camera.position.z-exitDoor.position.z)<3){
- if(hasKey){
- winGame();
- }else say('THE EXIT IS LOCKED. FIND THE PHARMACY KEY!',3);
- }else say('NOTHING TO COLLECT HERE.',1);
-}
-
-function updateInventory(){
- document.getElementById('items').textContent=inventory.length?inventory.join(' • '):'Empty';
-}
-
-// ---------------- UI ----------------
-
-function updateUI(){
- document.getElementById('healthText').textContent=Math.round(health);
- document.getElementById('staminaText').textContent=Math.round(stamina);
- document.getElementById('healthFill').style.width=health+'%';
- document.getElementById('staminaFill').style.width=stamina+'%';
-
- const powers=[];
- if(strengthBoost>0)powers.push('💪 Strength '+Math.ceil(strengthBoost)+'s');
- if(speedBoost>0)powers.push('⚡ Moi Moi speed '+Math.ceil(speedBoost)+'s');
- if(invisible>0)powers.push('👻 Agbo invisibility '+Math.ceil(invisible)+'s');
- document.getElementById('power').textContent=powers.join(' | ');
-}
-
-// ---------------- MAP ----------------
-
-const mapCanvas=document.getElementById('map');
-const ctx=mapCanvas.getContext('2d');
-
-function mapPoint(x,z){
- return {x:110+x*4.1,y:110+z*4.1};
-}
-
-function drawMap(){
- ctx.clearRect(0,0,220,220);
- ctx.fillStyle='#15231c';
- ctx.fillRect(0,0,220,220);
-
- // Building outline
- ctx.strokeStyle='#c2c9b8';ctx.lineWidth=5;
- ctx.strokeRect(22,19,176,182);
-
- // Corridors and room walls
- ctx.strokeStyle='#879386';ctx.lineWidth=4;
- ctx.beginPath();
- ctx.moveTo(98,19);ctx.lineTo(98,201);
- ctx.moveTo(122,19);ctx.lineTo(122,201);
- ctx.moveTo(22,49);ctx.lineTo(198,49);
- ctx.moveTo(22,78);ctx.lineTo(198,78);
- ctx.moveTo(22,107);ctx.lineTo(198,107);
- ctx.moveTo(22,136);ctx.lineTo(198,136);
- ctx.moveTo(22,165);ctx.lineTo(198,165);
- ctx.stroke();
-
- // Key
- if(!hasKey){
- const p=mapPoint(key.x,key.z);
- ctx.fillStyle='#ffdb38';
- ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();
+  const o=new THREE.Mesh(
+   new THREE.OctahedronGeometry(.25),
+   new THREE.MeshStandardMaterial({
+    color,
+    emissive:color,
+    emissiveIntensity:.4
+   })
+  );
+  o.position.y=.45;
+  g.add(o);
  }
 
- // Power-ups
- for(const item of items){
- if(item.taken)continue;
- const p=mapPoint(item.data.x,item.data.z);
- ctx.fillStyle='#48df8c';
- ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();
+ const light=new THREE.PointLight(color,1.3,3);
+ light.position.y=.8;
+ g.add(light);
+
+ g.position.set(x,0,z);
+ scene.add(g);
+
+ return {
+  group:g,x,z,label,type,taken:false
+ };
+}
+
+const key=makePickup(10,-18,'PHARMACY KEY','key',0xffd23e);
+
+const pickups=[
+ makePickup(-10,4,'OKPA + COKE','food',0xc84b24),
+ makePickup(10,-5,'MAMA TOLU MOI MOI','food',0xd6a348),
+ makePickup(-10,-17,'AGBO JEDI','bottle',0x6b9c39),
+ makePickup(10,9,'BLOOD OF JESUS · GOLDEN CHALICE','chalice',0xe6bd39),
+ makePickup(-10,11,'HOLY WATER','bottle',0x80c8ed),
+ makePickup(10,-12,'HOLY CANE','cane',0x9b6b3d)
+];
+
+/* THREE HORROR HUNTERS */
+
+function createMonster(kind,x,z){
+ const g=new THREE.Group();
+
+ if(kind==='madam'){
+  const dress=new THREE.Mesh(
+   new THREE.ConeGeometry(.55,1.45,16),mats.red
+  );
+  dress.position.y=.9;
+  g.add(dress);
+
+  const head=new THREE.Mesh(
+   new THREE.SphereGeometry(.27,16,12),mats.skin
+  );
+  head.position.y=1.8;
+  g.add(head);
+
+  const hair=new THREE.Mesh(
+   new THREE.SphereGeometry(.3,12,10),mats.hair
+  );
+  hair.scale.set(1,1.2,.8);
+  hair.position.set(0,2.02,.03);
+  g.add(hair);
+
+  const lips=new THREE.Mesh(
+   new THREE.BoxGeometry(.15,.045,.035),
+   new THREE.MeshBasicMaterial({color:0xff101b})
+  );
+  lips.position.set(0,1.76,-.25);
+  g.add(lips);
+
+  for(const sx of [-.2,.2]){
+   const leg=new THREE.Mesh(
+    new THREE.CylinderGeometry(.07,.06,.55,8),mats.skin
+   );
+   leg.position.set(sx,.2,0);
+   g.add(leg);
+
+   const heel=new THREE.Mesh(
+    new THREE.BoxGeometry(.13,.08,.28),
+    new THREE.MeshStandardMaterial({color:0x080808})
+   );
+   heel.position.set(sx,.04,-.08);
+   g.add(heel);
+  }
+
+ }else if(kind==='bush'){
+  const body=new THREE.Mesh(
+   new THREE.SphereGeometry(.65,14,12),
+   new THREE.MeshStandardMaterial({color:0x40382c,roughness:1})
+  );
+  body.scale.set(.9,1.3,1);
+  body.position.y=.8;
+  g.add(body);
+
+  const face=new THREE.Mesh(
+   new THREE.SphereGeometry(.35,12,10),
+   new THREE.MeshStandardMaterial({color:0x77705c})
+  );
+  face.scale.set(1,.8,.8);
+  face.position.set(0,1.55,-.25);
+  g.add(face);
+
+  for(let i=0;i<3;i++){
+   const teeth=new THREE.Mesh(
+    new THREE.BoxGeometry(.42,.06,.08),
+    new THREE.MeshStandardMaterial({color:0xf4ead1})
+   );
+   teeth.position.set(0,1.42-i*.09,-.55);
+   g.add(teeth);
+  }
+
+  for(let i=0;i<12;i++){
+   const tuft=new THREE.Mesh(
+    new THREE.ConeGeometry(.12,.42,5),mats.hair
+   );
+   const a=i*Math.PI*2/12;
+   tuft.position.set(
+    Math.cos(a)*.48,
+    1.2+Math.sin(a)*.35,
+    Math.sin(a)*.4
+   );
+   g.add(tuft);
+  }
+
+ }else{
+  const robe=new THREE.Mesh(
+   new THREE.ConeGeometry(.65,1.6,10),
+   new THREE.MeshStandardMaterial({color:0x282b36})
+  );
+  robe.position.y=.85;
+  g.add(robe);
+
+  const mask=new THREE.Mesh(
+   new THREE.SphereGeometry(.38,12,10),
+   new THREE.MeshStandardMaterial({color:0xb9a77d})
+  );
+  mask.scale.set(1.1,1.2,.55);
+  mask.position.y=1.85;
+  g.add(mask);
+
+  for(let i=0;i<5;i++){
+   const horn=new THREE.Mesh(
+    new THREE.ConeGeometry(.08,.55,6),
+    new THREE.MeshStandardMaterial({color:0xddd0a7})
+   );
+   horn.position.set(-.4+i*.2,2.2,.02);
+   horn.rotation.z=(i-2)*.25;
+   g.add(horn);
+  }
+
+  const eyes=new THREE.Mesh(
+   new THREE.BoxGeometry(.34,.06,.04),
+   new THREE.MeshBasicMaterial({color:0xff2417})
+  );
+  eyes.position.set(0,1.9,-.22);
+  g.add(eyes);
  }
 
- // Monster
- if(invisible<=0){
- const p=mapPoint(monster.position.x,monster.position.z);
- ctx.fillStyle='#ff3939';
- ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();
- }
+ g.position.set(x,0,z);
+ scene.add(g);
 
- // Player
- const p=mapPoint(camera.position.x,camera.position.z);
- ctx.save();
- ctx.translate(p.x,p.y);
- ctx.rotate(yaw);
- ctx.fillStyle='#54c7ff';
- ctx.beginPath();
- ctx.moveTo(0,-9);ctx.lineTo(-6,7);ctx.lineTo(6,7);
- ctx.closePath();ctx.fill();
- ctx.restore();
+ return {
+  kind,
+  group:g,
+  speed:kind==='madam'?.72:.58,
+  stun:0,
+  phase:Math.random()*5,
+  homeX:x,
+  homeZ:z
+ };
 }
 
-// ---------------- GAME LOOP ----------------
+const monsters=[
+ createMonster('madam',-10,-4),
+ createMonster('bush',10,2),
+ createMonster('ojuju',-10,-12)
+];
 
-function endGame(title,text){
- gameOver=true;
- document.exitPointerLock?.();
- document.getElementById('endTitle').textContent=title;
- document.getElementById('endText').textContent=text;
- document.getElementById('overlay').style.display='flex';
+const saltButton=document.getElementById('saltButton');
+ // ==========================================
+// PART 3: GAMEPLAY, MONSTERS, MAP AND ENDING
+// ==========================================
+
+let holyWaterCharges = 0;
+let bloodCharges = 0;
+let caneCharges = 0;
+let lastFootstep = 0;
+let lastMonsterSound = 0;
+let interactionMessage = 'Explore the hospital. Find the pharmacy key!';
+let monsterDamage = 0;
+
+// Add an item to the player's personal inventory
+function addItem(label, type) {
+    inventory.push(label);
+
+    if (type === 'holy') holyWaterCharges++;
+    if (type === 'blood') bloodCharges++;
+    if (type === 'cane') caneCharges++;
+
+    renderWallet();
+
+    say(label + ' collected!');
+    audioTone(650, 0.12, 'sine');
 }
 
-function winGame(){
- won=true;
- endGame('YOU ESCAPED!', 'You survived General Hospital Onitsha. But something followed you home...');
+// Display a message safely
+function saySafe(message) {
+    if (typeof say === 'function') say(message);
 }
 
-function update(dt){
- if(!started||gameOver||won)return;
+// Find the closest monster
+function nearestMonster(maxDistance = 5) {
+    let closest = null;
+    let distance = maxDistance;
 
- camera.rotation.order='YXZ';
- camera.rotation.y=yaw;
- camera.rotation.x=pitch;
+    for (const monster of monsters) {
+        if (!monster.group.visible) continue;
 
- const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
- const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
- const move=new THREE.Vector3(
-  
- (pressed.KeyD||pressed.ArrowRight||touch.right ? 1 : 0) -
- (pressed.KeyA||pressed.ArrowLeft||touch.left ? 1 : 0),
- 0,
- (pressed.KeyW||pressed.ArrowUp||touch.forward ? 1 : 0) -
- (pressed.KeyS||pressed.ArrowDown||touch.back ? 1 : 0)
- );
- const forwardAmount=move.z;
- const sideAmount=move.x;
- move.copy(forward).multiplyScalar(forwardAmount).addScaledVector(right,sideAmount);
- if(move.lengthSq()>0) move.normalize();
+        const d = camera.position.distanceTo(monster.group.position);
 
- const boost=speedBoost>0?1.6:1;
- const pace=(running&&stamina>0?5:2.8)*boost;
- if(running&&move.lengthSq()>0) stamina=Math.max(0,stamina-25*dt);
- else stamina=Math.min(100,stamina+12*dt);
+        if (d < distance) {
+            distance = d;
+            closest = monster;
+        }
+    }
 
- const nx=camera.position.x+move.x*pace*dt;
- const nz=camera.position.z+move.z*pace*dt;
- if(!blocked(nx,camera.position.z))camera.position.x=nx;
- if(!blocked(camera.position.x,nz))camera.position.z=nz;
-
- const dx=camera.position.x-monster.position.x;
- const dz=camera.position.z-monster.position.z;
- const dist=Math.hypot(dx,dz);
-
- if(dist>1.3){
-  const speed=invisible>0?.3:1.1;
-  const mx=monster.position.x+dx/dist*speed*dt;
-  const mz=monster.position.z+dz/dist*speed*dt;
-  if(!blocked(mx,monster.position.z))monster.position.x=mx;
-  if(!blocked(monster.position.x,mz))monster.position.z=mz;
- }else if(invisible<=0&&damageCooldown<=0){
-  health=Math.max(0,health-12);
-  damageCooldown=1.2;
-  say('THE CREATURE HAS FOUND YOU!',2);
- }
-
- damageCooldown=Math.max(0,damageCooldown-dt);
- invisible=Math.max(0,invisible-dt);
- speedBoost=Math.max(0,speedBoost-dt);
- strengthBoost=Math.max(0,strengthBoost-dt);
-
- updateUI();
- drawMap();
+    return closest;
 }
 
-function animate(){
- requestAnimationFrame(animate);
- const dt=Math.min(clock.getDelta(),0.05);
+// Use the holy cane to stagger a monster
+function useCane() {
+    if (caneCharges <= 0) {
+        saySafe('You do not have a cane!');
+        return;
+    }
 
- update(dt);
+    const monster = nearestMonster(5);
 
- flashlight.position.copy(camera.position);
- flashlight.position.y-=.12;
- const direction=new THREE.Vector3(0,0,-1).applyEuler(camera.rotation);
- flashlight.target.position.copy(camera.position).add(direction.multiplyScalar(8));
+    if (!monster) {
+        saySafe('No monster is close enough!');
+        return;
+    }
 
- renderer.render(scene,camera);
+    caneCharges--;
+    monster.stun = 4;
+
+    saySafe('You struck the creature with the holy cane!');
+    audioTone(120, 0.25, 'sawtooth');
 }
+
+// Holy water temporarily disables nearby monsters
+function useHolyWater() {
+    if (holyWaterCharges <= 0) {
+        saySafe('You have no holy water left!');
+        return;
+    }
+
+    holyWaterCharges--;
+
+    for (const monster of monsters) {
+        if (camera.position.distanceTo(monster.group.position) < 12) {
+            monster.stun = Math.max(monster.stun, 5);
+            monster.group.visible = true;
+        }
+    }
+
+    saySafe('The holy water burns the demons! Run!');
+    audioTone(900, 0.4, 'sine');
+}
+
+// Blood of Jesus slows nearby monsters
+function useBlood() {
+    if (bloodCharges <= 0) {
+        saySafe('You have no Blood of Jesus left!');
+        return;
+    }
+
+    bloodCharges--;
+    slowMonsters = 12;
+
+    saySafe('The power of the Blood slows the creatures!');
+    audioTone(520, 0.5, 'sine');
+}
+
+// Salt circle protects the player
+saltButton.addEventListener('click', () => {
+    if (!started || gameOver || won) return;
+
+    if (saltUses <= 0) {
+        saySafe('You have used all your salt!');
+        return;
+    }
+
+    saltUses--;
+    saltTime = 10;
+
+    saySafe('Salt circle activated! You are protected for 10 seconds.');
+    audioTone(750, 0.35, 'sine');
+
+    saltButton.textContent = 'SALT: ' + saltUses;
+});
+
+// Pick up nearby objects
+function interact() {
+    if (!started || gameOver || won) return;
+
+    const px = camera.position.x;
+    const pz = camera.position.z;
+
+    // Pharmacy key
+    if (!hasKey) {
+        const d = Math.hypot(px - key.x, pz - key.z);
+
+        if (d < 2.4) {
+            hasKey = true;
+            key.group.visible = false;
+
+            inventory.push('Pharmacy Key');
+            renderWallet();
+
+            saySafe('You found the pharmacy key! Find the exit.');
+            audioTone(800, 0.25, 'sine');
+            return;
+        }
+    }
+
+    // Other pickups
+    for (const item of pickups) {
+        if (item.taken) continue;
+
+        const d = Math.hypot(px - item.x, pz - item.z);
+
+        if (d < 2.5) {
+            item.taken = true;
+            item.group.visible = false;
+
+            addItem(item.label, item.type);
+            return;
+        }
+    }
+
+    saySafe('There is nothing nearby to collect.');
+}
+
+// Keyboard interaction
+window.addEventListener('keydown', (event) => {
+    if (event.repeat) return;
+
+    if (event.code === 'KeyE') interact();
+    if (event.code === 'Digit1') useHolyWater();
+    if (event.code === 'Digit2') useBlood();
+    if (event.code === 'Digit3') useCane();
+});
+
+// ==========================================
+// MONSTER MOVEMENT AND BEHAVIOUR
+// ==========================================
+
+function updateMonsters(delta) {
+    const player = camera.position;
+
+    for (const monster of monsters) {
+        if (!monster.group.visible) continue;
+
+        if (monster.stun > 0) {
+            monster.stun -= delta;
+            continue;
+        }
+
+        const dx = player.x - monster.group.position.x;
+        const dz = player.z - monster.group.position.z;
+        const distance = Math.hypot(dx, dz);
+
+        if (distance < 17) {
+            let speed = monster.speed;
+
+            if (slowMonsters > 0) speed *= 0.35;
+            if (invisible) speed *= 0.15;
+
+            if (distance > 1.5) {
+                const nx = monster.group.position.x + (dx / distance) * speed * delta;
+                const nz = monster.group.position.z + (dz / distance) * speed * delta;
+
+                if (!blocked(nx, monster.group.position.z)) {
+                    monster.group.position.x = nx;
+                }
+
+                if (!blocked(monster.group.position.x, nz)) {
+                    monster.group.position.z = nz;
+                }
+            }
+
+            monster.group.rotation.y = Math.atan2(dx, dz);
+
+            // Monster attack
+            if (
+                distance < 1.8 &&
+                saltTime <= 0 &&
+                !invisible &&
+                damageCooldown <= 0
+            ) {
+                health -= 12;
+                damageCooldown = 1.5;
+
+                saySafe(monster.kind + ' has attacked you!');
+                audioTone(90, 0.35, 'sawtooth');
+            }
+
+            // Monster sounds
+            if (distance < 10 && performance.now() - lastMonsterSound > 3500) {
+                lastMonsterSound = performance.now();
+                audioTone(150, 0.18, 'triangle');
+            }
+        }
+    }
+}
+
+// ==========================================
+// PLAYER MOVEMENT
+// ==========================================
+
+function updatePlayer(delta) {
+    if (!started || gameOver || won) return;
+
+    let forward = 0;
+    let sideways = 0;
+
+    if (pressed['KeyW'] || pressed['ArrowUp'] || touch.forward) forward++;
+    if (pressed['KeyS'] || pressed['ArrowDown'] || touch.backward) forward--;
+    if (pressed['KeyA'] || pressed['ArrowLeft'] || touch.left) sideways--;
+    if (pressed['KeyD'] || pressed['ArrowRight'] || touch.right) sideways++;
+
+    const length = Math.hypot(forward, sideways);
+
+    if (length > 0) {
+        forward /= length;
+        sideways /= length;
+
+        const isRunning =
+            running &&
+            stamina > 0 &&
+            (pressed['ShiftLeft'] || pressed['ShiftRight'] || touch.run);
+
+        let speed = isRunning ? 6.2 : 3.5;
+
+        if (speedBoost > 0) speed *= 1.65;
+
+        const moveX =
+            (-Math.sin(yaw) * forward + Math.cos(yaw) * sideways) *
+            speed * delta;
+
+        const moveZ =
+            (-Math.cos(yaw) * forward - Math.sin(yaw) * sideways) *
+            speed * delta;
+
+        const nextX = camera.position.x + moveX;
+        const nextZ = camera.position.z + moveZ;
+
+        if (!blocked(nextX, camera.position.z)) {
+            camera.position.x = nextX;
+        }
+
+        if (!blocked(camera.position.x, nextZ)) {
+            camera.position.z = nextZ;
+        }
+
+        if (isRunning) {
+            stamina = Math.max(0, stamina - 24 * delta);
+        } else {
+            stamina = Math.min(100, stamina + 10 * delta);
+        }
+
+        // Footsteps
+        if (performance.now() - lastFootstep > (isRunning ? 280 : 470)) {
+            lastFootstep = performance.now();
+            audioTone(isRunning ? 75 : 105, 0.055, 'triangle');
+        }
+    } else {
+        stamina = Math.min(100, stamina + 13 * delta);
+    }
+
+    camera.rotation.order = 'YXZ';
+    camera.rotation.y = yaw;
+    camera.rotation.x = pitch;
+
+    // Keep the flashlight facing the player
+    flashlight.position.copy(camera.position);
+    flashlight.position.y -= 0.15;
+
+    const direction = new THREE.Vector3(
+        -Math.sin(yaw),
+        Math.sin(pitch),
+        -Math.cos(yaw)
+    );
+
+    flashlight.target.position.copy(camera.position).add(direction.multiplyScalar(10));
+
+    // Temporary effects
+    if (speedBoost > 0) speedBoost -= delta;
+    if (invisible > 0) invisible -= delta;
+    if (slowMonsters > 0) slowMonsters -= delta;
+    if (holyTime > 0) holyTime -= delta;
+    if (stunTime > 0) stunTime -= delta;
+    if (saltTime > 0) saltTime -= delta;
+    if (damageCooldown > 0) damageCooldown -= delta;
+
+    // Check exit
+    if (
+        hasKey &&
+        camera.position.z > 19 &&
+        Math.abs(camera.position.x) < 2.5
+    ) {
+        finishGame();
+    }
+}
+
+// ==========================================
+// MINIMAP
+// ==========================================
+
+function drawMap() {
+    const canvas = document.getElementById('map');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.fillStyle = '#101820';
+    ctx.fillRect(0, 0, w, h);
+
+    // Hospital outline
+    ctx.strokeStyle = '#9eabb5';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(8, 8, w - 16, h - 16);
+
+    // Corridors and wards
+    ctx.fillStyle = '#354653';
+    ctx.fillRect(w * 0.42, 8, w * 0.16, h - 16);
+    ctx.fillRect(8, h * 0.43, w - 16, h * 0.14);
+
+    // Room divisions
+    ctx.strokeStyle = '#788894';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.25, 8);
+    ctx.lineTo(w * 0.25, h * 0.43);
+    ctx.moveTo(w * 0.75, 8);
+    ctx.lineTo(w * 0.75, h * 0.43);
+    ctx.moveTo(w * 0.25, h * 0.57);
+    ctx.lineTo(w * 0.25, h - 8);
+    ctx.moveTo(w * 0.75, h * 0.57);
+    ctx.lineTo(w * 0.75, h - 8);
+    ctx.stroke();
+
+    function mapX(x) {
+        return w / 2 + x * (w / 26);
+    }
+
+    function mapY(z) {
+        return h / 2 + z * (h / 44);
+    }
+
+    function marker(x, z, color, radius = 4) {
+        ctx.beginPath();
+        ctx.arc(mapX(x), mapY(z), radius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    // Exit
+    marker(0, 21, '#ffffff', 5);
+
+    // Key
+    if (!hasKey) marker(key.x, key.z, '#ffd43b', 5);
+
+    // Collectibles
+    for (const item of pickups) {
+        if (!item.taken) marker(item.x, item.z, '#48d6ff', 3);
+    }
+
+    // Monsters
+    for (const monster of monsters) {
+        if (monster.group.visible) {
+            marker(
+                monster.group.position.x,
+                monster.group.position.z,
+                '#ff3030',
+                5
+            );
+        }
+    }
+
+    // Player
+    marker(camera.position.x, camera.position.z, '#4dff87', 5);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '10px Arial';
+    ctx.fillText('YOU', 10, h - 10);
+    ctx.fillStyle = '#ffd43b';
+    ctx.fillText('KEY', 42, h - 10);
+    ctx.fillStyle = '#ff3030';
+    ctx.fillText('DANGER', 72, h - 10);
+}
+
+// ==========================================
+// HUD
+// ==========================================
+
+function updateHUD() {
+    const healthBar = document.getElementById('healthFill');
+    const staminaBar = document.getElementById('staminaFill');
+
+    if (healthBar) healthBar.style.width = Math.max(0, health) + '%';
+    if (staminaBar) staminaBar.style.width = Math.max(0, stamina) + '%';
+
+    const healthText = document.getElementById('healthText');
+    const staminaText = document.getElementById('staminaText');
+
+    if (healthText) healthText.textContent = Math.max(0, Math.ceil(health));
+    if (staminaText) staminaText.textContent = Math.ceil(stamina);
+
+    const objective = document.getElementById('objective');
+
+    if (objective) {
+        objective.textContent = hasKey
+            ? 'Objective: Escape through the main exit!'
+            : 'Objective: Find the pharmacy key!';
+    }
+
+    const wallet = document.getElementById('wallet');
+
+    if (wallet) {
+        wallet.dataset.items = inventory.length;
+    }
+
+    const effects = document.getElementById('effects');
+
+    if (effects) {
+        const active = [];
+
+        if (saltTime > 0) active.push('Salt protection: ' + Math.ceil(saltTime) + 's');
+        if (speedBoost > 0) active.push('Speed boost: ' + Math.ceil(speedBoost) + 's');
+        if (invisible > 0) active.push('Invisible: ' + Math.ceil(invisible) + 's');
+        if (slowMonsters > 0) active.push('Monsters slowed: ' + Math.ceil(slowMonsters) + 's');
+
+        effects.textContent = active.join(' | ');
+    }
+}
+
+// ==========================================
+// GAME ENDINGS
+// ==========================================
+
+function finishGame() {
+    if (won || gameOver) return;
+
+    won = true;
+
+    const overlay = document.getElementById('message');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.innerHTML = `
+            <div style="background:#101820;color:white;padding:28px;border:2px solid #d4af37;border-radius:14px;text-align:center;max-width:420px">
+                <h1 style="color:#e8c45b">YOU ESCAPED!</h1>
+                <p>You survived General Hospital Onitsha.</p>
+                <p>Congratulations, ${playerName}!</p>
+                <p>Your age: ${playerAge}</p>
+                <button onclick="location.reload()" style="padding:12px 24px;background:#d4af37;border:0;border-radius:8px;font-weight:bold">PLAY AGAIN</button>
+            </div>
+        `;
+    }
+
+    audioTone(700, 0.7, 'sine');
+}
+
+function endGame() {
+    if (gameOver || won) return;
+
+    gameOver = true;
+
+    const overlay = document.getElementById('message');
+
+    if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.innerHTML = `
+            <div style="background:#160909;color:white;padding:28px;border:2px solid #a22;border-radius:14px;text-align:center;max-width:420px">
+                <h1 style="color:#ff4545">YOU DID NOT SURVIVE</h1>
+                <p>The hospital has claimed another victim.</p>
+                <p>${playerName}, your night is over.</p>
+                <button onclick="location.reload()" style="padding:12px 24px;background:#a22;color:white;border:0;border-radius:8px;font-weight:bold">TRY AGAIN</button>
+            </div>
+        `;
+    }
+
+    audioTone(55, 1, 'sawtooth');
+}
+
+// ==========================================
+// MAIN GAME LOOP
+// ==========================================
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const delta = Math.min(clock.getDelta(), 0.05);
+
+    if (started && !gameOver && !won) {
+        updatePlayer(delta);
+        updateMonsters(delta);
+
+        if (health <= 0) {
+            health = 0;
+            endGame();
+        }
+
+        updateHUD();
+        drawMap();
+    }
+
+    renderer.render(scene, camera);
+}
+
+// ==========================================
+// WINDOW RESIZE
+// ==========================================
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ==========================================
+// START THE GAME LOOP
+// ==========================================
 
 animate();
-
-window.addEventListener('resize',()=>{
- camera.aspect=innerWidth/innerHeight;
- camera.updateProjectionMatrix();
- renderer.setSize(innerWidth,innerHeight);
-});
-</script>
-</body>
-</html>
-
