@@ -980,7 +980,13 @@ function updateMonsters(delta) {
             // Monster sounds
             if (distance < 10 && performance.now() - lastMonsterSound > 3500) {
                 lastMonsterSound = performance.now();
-                audioTone(150, 0.18, 'triangle');
+                if (monster.kind === 'Bush Baby') {
+    monsterAudio.bushBabyCry('stalker');
+} else if (monster.kind === 'Opiankwu') {
+    monsterAudio.opiankwuChop('stalker');
+} else if (monster.kind === 'Madam Koi-Koi') {
+    monsterAudio.madamHeelClick('stalker');
+}
             }
         }
     }
