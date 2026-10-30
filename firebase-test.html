@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>THE LAST NIGHT - Firebase Test</title>
+  <style>
+    body {
+      background: #10131b;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 25px;
+      text-align: center;
+    }
+    button {
+      padding: 14px 22px;
+      margin: 10px;
+      border: 0;
+      border-radius: 8px;
+      background: #b52b38;
+      color: white;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 25px;
+      padding: 15px;
+      background: #222938;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <h1>THE LAST NIGHT</h1>
+  <h2>Firebase Connection Test</h2>
+
+  <p>Test guest registration and player saving.</p>
+
+  <button id="testButton">TEST GUEST LOGIN & SAVE</button>
+
+  <div id="result">Waiting for test...</div>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously
+    } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc
+    } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0a0dkl5bs9vTnEsi6rw9FzOOXKssQQl0",
+      authDomain: "the-last-night-1bf0f.firebaseapp.com",
+      projectId: "the-last-night-1bf0f",
+      storageBucket: "the-last-night-1bf0f.firebasestorage.app",
+      messagingSenderId: "637836335674",
+      appId: "1:637836335674:web:75d6126c86d06ea0cff303"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const result = document.getElementById("result");
+    const button = document.getElementById("testButton");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      result.textContent = "Testing Firebase...";
+
+      try {
+        const login = await signInAnonymously(auth);
+        const user = login.user;
+
+        result.textContent = "Guest login successful. Testing database...";
+
+        const playerRef = doc(db, "players", user.uid);
+
+        await setDoc(playerRef, {
+          name: "Test Player",
+          age: 18,
+          coins: 0,
+          inventory: [],
+          progress: "Firebase connection test",
+          updatedAt: new Date().toISOString()
+        });
+
+        const savedPlayer = await getDoc(playerRef);
+
+        if (savedPlayer.exists()) {
+          result.textContent =
+            "SUCCESS! Guest login works and player data was saved and retrieved. Player ID: " +
+            user.uid;
+        } else {
+          result.textContent = "Login worked, but player data was not found.";
+        }
+
+      } catch (error) {
+        result.textContent =
+          "TEST FAILED: " + error.code + " - " + error.message;
+      }
+
+      button.disabled = false;
+    });
+  </script>
+</body>
+</html>
