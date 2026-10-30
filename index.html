@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>THE LAST NIGHT - General Hospital Onitsha</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#030505;color:white;font-family:Arial,sans-serif}
+canvas{display:block}
+#menu{position:fixed;inset:0;z-index:10;background:radial-gradient(#19201e,#030505 75%);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
+h1{font-size:clamp(35px,9vw,75px);letter-spacing:5px;color:#d0d3ce;text-shadow:0 0 25px #a00000;margin:0}
+#hospital{color:#b9b9b9;letter-spacing:3px;font-size:clamp(13px,3vw,19px);margin:18px 0}
+#story{max-width:450px;color:#aaa;line-height:1.7;font-size:14px}
+button{background:#681414;border:1px solid #a34b4b;color:white;padding:14px 23px;border-radius:5px;font-weight:bold}
+#start{font-size:16px;margin-top:22px}
+#hud{display:none;position:fixed;inset:0;pointer-events:none}
+#objective{position:absolute;top:15px;left:12px;background:#000b;padding:12px;font-size:13px;border-left:3px solid #a52b2b}
+#cross{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ddd}
+#msg{position:absolute;top:40%;width:100%;text-align:center;font-size:19px;text-shadow:0 2px 6px black}
+#danger{position:absolute;inset:0;border:0 solid #a00000}
+#controls{position:absolute;bottom:18px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end}
+#move{display:grid;grid-template-columns:50px 50px 50px;grid-template-rows:50px 50px;gap:5px}
+#controls button{pointer-events:auto;width:50px;height:50px;padding:0;background:#252b2bcc;border:1px solid #777;border-radius:10px;font-size:19px}
+#up{grid-column:2}
+#left{grid-column:1;grid-row:2}
+#down{grid-column:2;grid-row:2}
+#right{grid-column:3;grid-row:2}
+#actions{display:flex;gap:6px}
+#actions button{height:57px;width:57px;font-size:11px}
+@media(hover:hover) and (pointer:fine){#controls{display:none}}
+</style>
+</head>
+<body>
+
+<div id="menu">
+<h1>THE LAST NIGHT</h1>
+<div id="hospital">GENERAL HOSPITAL ONITSHA</div>
+<p id="story">
+ONITSHA, ANAMBRA STATE. 2:13 AM.<br><br>
+The hospital has lost electricity. The generator is silent.
+The corridors are empty. You wake up alone.
+But something is moving inside the hospital.<br><br>
+Find the pharmacy key. Reach the exit. SURVIVE.
+</p>
+<button id="start">ENTER THE HOSPITAL</button>
+<p style="color:#777;font-size:12px;margin-top:20px">A NIGERIAN SURVIVAL HORROR EXPERIENCE</p>
+</div>
+
+<div id="hud">
+<div id="objective">OBJECTIVE: Find the pharmacy key</div>
+<div id="cross">+</div>
+<div id="msg"></div>
+<div id="danger"></div>
+<div id="controls">
+<div id="move">
+<button id="up">▲</button>
+<button id="left">◀</button>
+<button id="down">▼</button>
+<button id="right">▶</button>
+</div>
+<div id="actions">
+<button id="run">RUN</button>
+<button id="light">FLASHLIGHT</button>
+<button id="use">INTERACT</button>
+</div>
+</div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050707);
+scene.fog=new THREE.FogExp2(0x050707,.026);
+
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
+camera.position.set(0,1.7,19);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.shadowMap.enabled=true;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0x83918c,0x11110d,.35));
+
+const flashlight=new THREE.SpotLight(0xe1e9dc,95,22,.34,.5,1.2);
+flashlight.castShadow=true;
+scene.add(flashlight,flashlight.target);
+
+const obstacles=[];
+const material=(c,r=1)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
+
+const concrete=material(0x73716a);
+const oldPaint=material(0x8a9180);
+const floor=material(0x363a35);
+const ceiling=material(0x292d29);
+const metal=material(0x565a54,.65);
+const wood=material(0x49392b);
+const white=material(0xb9b9a9);
+const dark=material(0x090c0b);
+const red=material(0x4c0909);
+
+function box(x,y,z,w,h,d,mat,collision=true){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ scene.add(m);
+ if(collision)obstacles.push({x,z,w,d});
+ return m;
+}
+
+// Main hospital building
+box(0,-.15,0,28,.3,44,floor,false);
+box(0,3.3,0,28,.3,44,ceiling,false);
+
+// Exterior walls
+box(-14,1.5,0,.35,3,44,concrete);
+box(14,1.5,0,.35,3,44,concrete);
+box(0,1.5,-22,28,3,.35,concrete);
+box(0,1.5,22,28,3,.35,concrete);
+
+// Central corridor walls, with room entrances
+function wallAlongX(x,z1,z2,gaps){
+ let current=z1;
+ for(const g of gaps.sort((a,b)=>a[0]-b[0])){
+  if(g[0]>current)box(x,1.5,(current+g[0])/2,.25,3,g[0]-current,oldPaint);
+  current=g[1];
+ }
+ if(current<z2)box(x,1.5,(current+z2)/2,.25,3,z2-current,oldPaint);
+}
+const doors=[[-19,-16],[-12,-9],[-5,-2],[2,5],[9,12],[16,19]];
+wallAlongX(-3,-22,22,doors.map(x=>[...x]));
+wallAlongX(3,-22,22,doors.map(x=>[...x]));
+
+// Room dividing walls
+function crossWall(z,x1,x2,gap){
+ if(x1<gap[0])box((x1+gap[0])/2,1.5,z,gap[0]-x1,3,.25,oldPaint);
+ if(gap[1]<x2)box((gap[1]+x2)/2,1.5,z,x2-gap[1],3,.25,oldPaint);
+}
+for(const z of [-15,-8,-1,6,13,20]){
+ crossWall(z,-14,-3,[-8,-6]);
+ crossWall(z,3,14,[6,8]);
+}
+
+// Room signs
+function sign(text,x,y,z,rotation=0){
+ const canvas=document.createElement('canvas');
+ canvas.width=512;canvas.height=128;
+ const ctx=canvas.getContext('2d');
+ ctx.fillStyle='#26352e';ctx.fillRect(0,0,512,128);
+ ctx.strokeStyle='#c6c5ad';ctx.lineWidth=7;ctx.strokeRect(5,5,502,118);
+ ctx.fillStyle='#f0eee0';ctx.font='bold 38px Arial';
+ ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText(text,256,65);
+ const texture=new THREE.CanvasTexture(canvas);
+ const mesh=new THREE.Mesh(new THREE.PlaneGeometry(3, .75),new THREE.MeshBasicMaterial({map:texture}));
+ mesh.position.set(x,y,z);mesh.rotation.y=rotation;
+ scene.add(mesh);
+}
+
+// Department signs
+sign('GENERAL HOSPITAL ONITSHA',0,2.6,19.7);
+sign('RECEPTION / REGISTRATION',0,2.5,13,Math.PI);
+sign('OUTPATIENT DEPARTMENT',-3.3,2.5,10,Math.PI/2);
+sign('EMERGENCY UNIT',3.3,2.5,3,-Math.PI/2);
+sign('MALE WARD',-3.3,2.5,-4,Math.PI/2);
+sign('FEMALE WARD',3.3,2.5,-11,-Math.PI/2);
+sign('LABORATORY',-3.3,2.5,-18,Math.PI/2);
+sign('PHARMACY',3.3,2.5,-18,-Math.PI/2);
+
+// Hospital reception desk
+box(0,.65,11,4,.9,1.1,wood);
+box(0,1.15,11,.5,.12,.15,metal);
+
+// Waiting room chairs
+for(let z of [14,16]){
+ for(let x of [-1.8,1.8]){
+  box(x,.5,z,.8,.12,.8,metal);
+  box(x,.9,z+.32,.8,.8,.12,metal,false);
+ }
+}
+
+// Hospital beds in wards
+function bed(x,z){
+ box(x,.55,z,1.8,.18,2,metal);
+ box(x,.72,z,1.6,.15,1.65,white,false);
+ box(x,.9,z-.85,1.8,.4,.12,white,false);
+ for(const dx of [-.7,.7])for(const dz of [-.7,.7]){
+  box(x+dx,.25,z+dz,.07,.5,.07,metal,false);
+ }
+}
+bed(-8,-4);
+bed(-11,-4);
+bed(8,-11);
+bed(11,-11);
+bed(-8,3);
+bed(11,3);
+
+// Cabinets and equipment
+box(-12,1,-2,1,2,.8,metal);
+box(12,1,-9,1,2,.8,metal);
+box(-12,.7,-18,1.1,1.4,.8,metal);
+box(11,.7,-17,1.2,1.4,.8,metal);
+
+// Hospital generator room equipment
+box(10,.8,16,2,1.6,1.5,metal);
+box(10,1.7,16,1.5,.15,1.1,dark);
+sign('GENERATOR ROOM',10,2.5,14.8);
+
+// Ceiling lights
+const flicker=[];
+for(let z=18;z>-21;z-=4){
+ const lamp=new THREE.PointLight(0xb3c2ae,1.1,7);
+ lamp.position.set(0,2.85,z);
+ scene.add(lamp);
+ flicker.push(lamp);
+ box(0,3,z,.8,.08,.35,white,false);
+}
+
+// Windows
+for(const z of [-18,-11,-4,3,10,17]){
+ for(const x of [-13.78,13.78]){
+  const windowMat=new THREE.MeshBasicMaterial({color:0x101b20});
+  const win=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),windowMat);
+  win.position.set(x,2,z);
+  win.rotation.y=x<0?Math.PI/2:-Math.PI/2;
+  scene.add(win);
+ }
+}
+
+// Blood stains
+for(let i=0;i<12;i++){
+ const stain=new THREE.Mesh(new THREE.CircleGeometry(.2+Math.random()*.35,16),red);
+ stain.rotation.x=-Math.PI/2;
+ stain.position.set((Math.random()-.5)*5,.012,Math.random()*30-12);
+ stain.scale.y=.7;
+ scene.add(stain);
+}
+
+// Exit door
+const exitDoor=box(0,1.5,-21.7,2.4,2.8,.3,metal);
+
+// Pharmacy key
+const key=new THREE.Group();
+const ring=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,8,20),material(0xd6ad4b));
+key.add(ring);
+const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.4,.07),material(0xd6ad4b));
+shaft.position.y=-.24;
+key.add(shaft);
+key.position.set(10,.8,-18);
+scene.add(key);
+const keyLight=new THREE.PointLight(0xe9b94b,2,4);
+keyLight.position.copy(key.position);
+scene.add(keyLight);
+
+// Monster
+const monster=new THREE.Group();
+const body=new THREE.Mesh(new THREE.BoxGeometry(.75,1.5,.5),dark);
+body.position.y=.95;monster.add(body);
+const head=new THREE.Mesh(new THREE.SphereGeometry(.34,12,12),material(0x171717));
+head.position.y=1.9;monster.add(head);
+for(const x of [-.14,.14]){
+ const eye=new THREE.Mesh(new THREE.SphereGeometry(.06,8,8),new THREE.MeshBasicMaterial({color:0xff0000}));
+ eye.position.set(x,1.95,-.29);monster.add(eye);
+}
+monster.position.set(-10,0,-4);
+scene.add(monster);
+
+let started=false,hasKey=false,won=false,lost=false;
+let lightOn=true,running=false;
+let yaw=0,pitch=0;
+const pressed={},touch={};
+let messageTime=0;
+const clock=new THREE.Clock();
+
+function message(t,d=3){
+ document.getElementById('msg').textContent=t;
+ messageTime=d;
+}
+
+document.getElementById('start').onclick=()=>{
+ started=true;
+ document.getElementById('menu').style.display='none';
+ document.getElementById('hud').style.display='block';
+ if(matchMedia('(pointer:fine)').matches)renderer.domElement.requestPointerLock();
+ message('WELCOME TO GENERAL HOSPITAL ONITSHA.',4);
+};
+
+document.addEventListener('keydown',e=>{
+ pressed[e.code]=true;
+ if(e.code==='KeyF')toggleLight();
+ if(e.code==='KeyE')interact();
+ if(e.code.includes('Shift'))running=true;
+});
+document.addEventListener('keyup',e=>{
+ pressed[e.code]=false;
+ if(e.code.includes('Shift'))running=false;
+});
+document.addEventListener('mousemove',e=>{
+ if(document.pointerLockElement===renderer.domElement){
+ yaw-=e.movementX*.002;
+ pitch-=e.movementY*.002;
+ pitch=Math.max(-1.3,Math.min(1.3,pitch));
+ }
+});
+
+// Touch look controls
+let lastX=null,lastY=null;
+renderer.domElement.addEventListener('touchstart',e=>{
+ lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+},{passive:true});
+renderer.domElement.addEventListener('touchmove',e=>{
+ if(!started||lastX===null)return;
+ const x=e.touches[0].clientX,y=e.touches[0].clientY;
+ yaw-=(x-lastX)*.006;
+ pitch-=(y-lastY)*.006;
+ pitch=Math.max(-1.3,Math.min(1.3,pitch));
+ lastX=x;lastY=y;
+},{passive:true});
+renderer.domElement.addEventListener('touchend',()=>{
+ lastX=null;lastY=null;
+});
+
+function bind(id,name){
+ const b=document.getElementById(id);
+ b.addEventListener('pointerdown',e=>{e.preventDefault();touch[name]=true});
+ b.addEventListener('pointerup',()=>touch[name]=false);
+ b.addEventListener('pointerleave',()=>touch[name]=false);
+}
+bind('up','forward');
+bind('down','back');
+bind('left','left');
+bind('right','right');
+bind('run','run');
+document.getElementById('run').onpointerdown=()=>running=true;
+document.getElementById('run').onpointerup=()=>running=false;
+document.getElementById('run').onpointerleave=()=>running=false;
+document.getElementById('light').onclick=toggleLight;
+document.getElementById('use').onclick=interact;
+
+function toggleLight(){
+ lightOn=!lightOn;
+ flashlight.intensity=lightOn?95:0;
+ message(lightOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1);
+}
+
+function interact(){
+ if(!started)return;
+ if(!hasKey&&camera.position.distanceTo(key.position)<2.5){
+ hasKey=true;
+ scene.remove(key);scene.remove(keyLight);
+ document.getElementById('objective').textContent='OBJECTIVE: Escape through the main entrance';
+ message('PHARMACY KEY FOUND! GET TO THE MAIN ENTRANCE!',4);
+ return;
+ }
+ if(camera.position.distanceTo(exitDoor.position)<3){
+ if(hasKey){
+ won=true;
+ document.getElementById('menu').style.display='flex';
+ document.getElementById('hud').style.display='none';
+ document.getElementById('story').innerHTML='YOU ESCAPED GENERAL HOSPITAL ONITSHA.<br><br>But the night is not over...';
+ document.getElementById('start').textContent='PLAY AGAIN';
+ }else message('THE MAIN ENTRANCE IS LOCKED. FIND THE KEY.',3);
+ }else message('NOTHING TO INTERACT WITH.',1);
+}
+
+function blocked(x,z){
+ if(x<-13||x>13||z>21||z<-21)return true;
+ for(const o of obstacles){
+ if(Math.abs(x-o.x)<o.w/2+.35&&Math.abs(z-o.z)<o.d/2+.35)return true;
+ }
+ return false;
+}
+
+function update(dt){
+ if(!started||won||lost)return;
+
+ camera.rotation.order='YXZ';
+ camera.rotation.y=yaw;
+ camera.rotation.x=pitch;
+
+ const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
+ const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
+ const move=new THREE.Vector3();
+
+ if(pressed.KeyW||pressed.ArrowUp||touch.forward)move.add(forward);
+ if(pressed.KeyS||pressed.ArrowDown||touch.back)move.sub(forward);
+ if(pressed.KeyA||pressed.ArrowLeft||touch.left)move.sub(right);
+ if(pressed.KeyD||pressed.ArrowRight||touch.right)move.add(right);
+
+ if(move.lengthSq()>0){
+ move.normalize().multiplyScalar((running?5:2.8)*dt);
+ let nx=camera.position.x+move.x;
+ let nz=camera.position.z+move.z;
+ if(!blocked(nx,camera.position.z))camera.position.x=nx;
+ if(!blocked(camera.position.x,nz))camera.position.z=nz;
+ }
+
+ camera.position.y=1.7;
+ flashlight.position.copy(camera.position);
+ const direction=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+ flashlight.target.position.copy(camera.position).add(direction.multiplyScalar(5));
+
+ // Monster follows the player
+ const distance=monster.position.distanceTo(camera.position);
+ if(distance>1.3){
+ const direction=new THREE.Vector3(camera.position.x-monster.position.x,0,camera.position.z-monster.position.z).normalize();
+ monster.position.add(direction.multiplyScalar(1.05*dt));
+ monster.rotation.y=Math.atan2(direction.x,direction.z);
+ }
+
+ document.getElementById('danger').style.borderWidth=distance<10?(10-distance)+'px':'0px';
+
+ // Unstable hospital lighting
+ for(const l of flicker){
+ if(Math.random()<.018)l.intensity=Math.random()<.3?.08:1.1;
+ }
+
+ key.rotation.y+=dt;
+ if(messageTime>0){
+ messageTime-=dt;
+ if(messageTime<=0)document.getElementById('msg').textContent='';
+ }
+
+ if(distance<1.3){
+ lost=true;
+ message('IT FOUND YOU. YOU DID NOT SURVIVE.',10);
+ setTimeout(()=>{
+ document.getElementById('menu').style.display='flex';
+ document.getElementById('hud').style.display='none';
+ document.getElementById('story').innerHTML='THE NIGHT HAS CLAIMED YOU.<br>THE HOSPITAL IS STILL WAITING.';
+ document.getElementById('start').textContent='TRY AGAIN';
+ },3500);
+ }
+}
+
+function animate(){
+ requestAnimationFrame(animate);
+ update(Math.min(clock.getDelta(),.05));
+ renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
