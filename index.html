@@ -137,6 +137,8 @@ Find the pharmacy key, gather supplies and escape alive.</p>
 
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+ import { createMonsterActors } from './monster-system.js';
+import { createMonsterAudio } from './monster-audio.js';
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x303a34);
