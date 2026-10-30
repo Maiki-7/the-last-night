@@ -3,314 +3,372 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>THE LAST NIGHT - General Hospital Onitsha</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>THE LAST NIGHT | General Hospital Onitsha</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#030505;color:white;font-family:Arial,sans-serif}
-canvas{display:block}
-#menu{position:fixed;inset:0;z-index:10;background:radial-gradient(#19201e,#030505 75%);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
-h1{font-size:clamp(35px,9vw,75px);letter-spacing:5px;color:#d0d3ce;text-shadow:0 0 25px #a00000;margin:0}
-#hospital{color:#b9b9b9;letter-spacing:3px;font-size:clamp(13px,3vw,19px);margin:18px 0}
-#story{max-width:450px;color:#aaa;line-height:1.7;font-size:14px}
-button{background:#681414;border:1px solid #a34b4b;color:white;padding:14px 23px;border-radius:5px;font-weight:bold}
-#start{font-size:16px;margin-top:22px}
+body{margin:0;overflow:hidden;background:#111;color:white;font-family:Arial,sans-serif}
+canvas#game{display:block}
+button{border:1px solid #888;background:#26332d;color:white;border-radius:9px;padding:12px;font-weight:bold}
+button:active{background:#9b632b}
+#menu{position:fixed;inset:0;z-index:20;background:radial-gradient(#303b31,#101612 65%,#050707);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:22px}
+#menu h1{font-size:clamp(38px,9vw,78px);letter-spacing:5px;margin:0;color:#e5e5d8;text-shadow:0 0 25px #9d241b}
+#menu h2{font-size:16px;letter-spacing:3px;color:#d3b68c}
+#menu p{max-width:470px;line-height:1.7;color:#c3c9c0;font-size:14px}
+#start{background:#791d17;padding:16px 25px;margin-top:12px;font-size:16px}
 #hud{display:none;position:fixed;inset:0;pointer-events:none}
-#objective{position:absolute;top:15px;left:12px;background:#000b;padding:12px;font-size:13px;border-left:3px solid #a52b2b}
-#cross{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ddd}
-#msg{position:absolute;top:40%;width:100%;text-align:center;font-size:19px;text-shadow:0 2px 6px black}
-#danger{position:absolute;inset:0;border:0 solid #a00000}
-#controls{position:absolute;bottom:18px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end}
-#move{display:grid;grid-template-columns:50px 50px 50px;grid-template-rows:50px 50px;gap:5px}
-#controls button{pointer-events:auto;width:50px;height:50px;padding:0;background:#252b2bcc;border:1px solid #777;border-radius:10px;font-size:19px}
+#top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#stats{background:#101914dc;border:1px solid #68776c;border-radius:10px;padding:9px;width:min(230px,52vw)}
+.stat{font-size:11px;margin:4px 0;color:#eee}
+.bar{height:9px;background:#343d36;border-radius:9px;overflow:hidden;margin-top:3px}
+.fill{height:100%;width:100%;transition:width .2s}
+#healthFill{background:#d34d43}
+#staminaFill{background:#e5bd48}
+#mapbox{width:145px;height:145px;max-width:39vw;max-height:39vw;background:#111d19eF;border:2px solid #a8b4a3;border-radius:12px;overflow:hidden}
+#map{width:100%;height:100%}
+#maplegend{position:absolute;right:10px;top:160px;background:#101914dc;padding:7px 9px;border-radius:7px;font-size:10px;line-height:1.6}
+#objective{position:absolute;top:165px;left:10px;background:#101914df;border-left:3px solid #e6bd50;padding:9px;font-size:12px;max-width:48%}
+#inventory{position:absolute;left:10px;bottom:12px;background:#101914df;border:1px solid #56665b;border-radius:9px;padding:8px;font-size:11px;line-height:1.6;max-width:210px}
+#power{position:absolute;top:215px;left:10px;font-size:11px;background:#142019dc;padding:7px;border-radius:7px;max-width:48%}
+#message{position:absolute;top:43%;width:100%;text-align:center;font-size:19px;font-weight:bold;text-shadow:0 2px 6px black;padding:0 15px}
+#danger{position:absolute;inset:0;border:0 solid #ba1717;pointer-events:none;transition:border-width .2s}
+#controls{position:absolute;bottom:15px;right:12px;display:flex;gap:6px;align-items:end}
+#controls button{pointer-events:auto;width:57px;height:57px;padding:2px;font-size:10px;background:#202b25eF}
+#move{position:absolute;bottom:15px;left:12px;display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px;gap:4px}
+#move button{pointer-events:auto;width:48px;height:48px;padding:0;font-size:19px;background:#202b25eF}
 #up{grid-column:2}
 #left{grid-column:1;grid-row:2}
 #down{grid-column:2;grid-row:2}
 #right{grid-column:3;grid-row:2}
-#actions{display:flex;gap:6px}
-#actions button{height:57px;width:57px;font-size:11px}
-@media(hover:hover) and (pointer:fine){#controls{display:none}}
+#interact{background:#75421b!important}
+#overlay{position:fixed;inset:0;display:none;z-index:15;background:#050908ed;align-items:center;justify-content:center;text-align:center;padding:25px}
+#overlay div{max-width:400px}
+#overlay h2{font-size:35px}
+#overlay button{margin-top:15px;padding:14px 25px}
+@media(hover:hover) and (pointer:fine){
+#controls,#move{display:none}
+}
+@media(max-width:430px){
+#mapbox{width:112px;height:112px}
+#maplegend{top:125px;font-size:9px}
+#objective{top:130px}
+#power{top:190px}
+#inventory{max-width:155px;font-size:10px}
+#controls button{width:49px;height:52px;font-size:9px}
+}
 </style>
 </head>
 <body>
 
 <div id="menu">
 <h1>THE LAST NIGHT</h1>
-<div id="hospital">GENERAL HOSPITAL ONITSHA</div>
-<p id="story">
-ONITSHA, ANAMBRA STATE. 2:13 AM.<br><br>
-The hospital has lost electricity. The generator is silent.
-The corridors are empty. You wake up alone.
-But something is moving inside the hospital.<br><br>
-Find the pharmacy key. Reach the exit. SURVIVE.
+<h2>GENERAL HOSPITAL ONITSHA</h2>
+<p>ONITSHA, ANAMBRA STATE — 2:13 AM<br><br>
+The generator has stopped. The hospital is in darkness.
+Something is hunting inside the building.<br><br>
+Find the pharmacy key, collect supplies and escape alive.
 </p>
+<p style="color:#d5b879">A NIGERIAN SURVIVAL HORROR EXPERIENCE</p>
 <button id="start">ENTER THE HOSPITAL</button>
-<p style="color:#777;font-size:12px;margin-top:20px">A NIGERIAN SURVIVAL HORROR EXPERIENCE</p>
+<p>WASD: Move | Mouse: Look | SHIFT: Run | E: Interact | F: Flashlight</p>
 </div>
 
 <div id="hud">
+<div id="top">
+<div id="stats">
+<div class="stat">❤️ HEALTH <span id="healthText">100</span>%</div>
+<div class="bar"><div class="fill" id="healthFill"></div></div>
+<div class="stat">⚡ STAMINA <span id="staminaText">100</span>%</div>
+<div class="bar"><div class="fill" id="staminaFill"></div></div>
+<div class="stat">🔦 FLASHLIGHT <span id="lightText">ON</span></div>
+</div>
+<div id="mapbox"><canvas id="map" width="220" height="220"></canvas></div>
+</div>
+<div id="maplegend">🔵 You<br>🟡 Key<br>🔴 Monster<br>🟢 Supplies</div>
 <div id="objective">OBJECTIVE: Find the pharmacy key</div>
-<div id="cross">+</div>
-<div id="msg"></div>
+<div id="power"></div>
+<div id="message"></div>
+<div id="inventory">🎒 INVENTORY<br><span id="items">Empty</span></div>
 <div id="danger"></div>
-<div id="controls">
 <div id="move">
 <button id="up">▲</button>
 <button id="left">◀</button>
 <button id="down">▼</button>
 <button id="right">▶</button>
 </div>
-<div id="actions">
+<div id="controls">
 <button id="run">RUN</button>
-<button id="light">FLASHLIGHT</button>
-<button id="use">INTERACT</button>
+<button id="flash">LIGHT</button>
+<button id="interact">USE</button>
 </div>
+</div>
+
+<div id="overlay">
+<div>
+<h2 id="endTitle">GAME OVER</h2>
+<p id="endText"></p>
+<button onclick="location.reload()">PLAY AGAIN</button>
 </div>
 </div>
 
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+// ---------------- SCENE ----------------
+
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x050707);
-scene.fog=new THREE.FogExp2(0x050707,.026);
+scene.background=new THREE.Color(0x303a34);
+scene.fog=new THREE.Fog(0x303a34,24,58);
 
 const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
-camera.position.set(0,1.7,19);
+camera.position.set(0,1.7,8);
 
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.15;
+renderer.toneMappingExposure=1.35;
 document.body.appendChild(renderer.domElement);
+renderer.domElement.id='game';
 
-scene.add(new THREE.HemisphereLight(0x83918c,0x11110d,.35));
+scene.add(new THREE.HemisphereLight(0xdce6cf,0x42473e,1.45));
+scene.add(new THREE.AmbientLight(0xffffff,.55));
 
-const flashlight=new THREE.SpotLight(0xe1e9dc,95,22,.34,.5,1.2);
+const flashlight=new THREE.SpotLight(0xfff0cf,110,28,.42,.45,1.1);
 flashlight.castShadow=true;
 scene.add(flashlight,flashlight.target);
 
 const obstacles=[];
-const material=(c,r=1)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
-
-const concrete=material(0x73716a);
-const oldPaint=material(0x8a9180);
-const floor=material(0x363a35);
-const ceiling=material(0x292d29);
-const metal=material(0x565a54,.65);
-const wood=material(0x49392b);
-const white=material(0xb9b9a9);
-const dark=material(0x090c0b);
-const red=material(0x4c0909);
+const mats={
+ wall:new THREE.MeshStandardMaterial({color:0x898b79,roughness:1}),
+ floor:new THREE.MeshStandardMaterial({color:0x666a5e,roughness:1}),
+ ceiling:new THREE.MeshStandardMaterial({color:0x777a70}),
+ metal:new THREE.MeshStandardMaterial({color:0x626d68,metalness:.35,roughness:.65}),
+ wood:new THREE.MeshStandardMaterial({color:0x59452f}),
+ white:new THREE.MeshStandardMaterial({color:0xc3c2ad}),
+ dark:new THREE.MeshStandardMaterial({color:0x080b0a}),
+ red:new THREE.MeshStandardMaterial({color:0x4b1110})
+};
 
 function box(x,y,z,w,h,d,mat,collision=true){
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
  m.position.set(x,y,z);
- m.castShadow=true;
- m.receiveShadow=true;
+ m.castShadow=true;m.receiveShadow=true;
  scene.add(m);
  if(collision)obstacles.push({x,z,w,d});
  return m;
 }
 
-// Main hospital building
-box(0,-.15,0,28,.3,44,floor,false);
-box(0,3.3,0,28,.3,44,ceiling,false);
+// ---------------- HOSPITAL BUILDING ----------------
 
-// Exterior walls
-box(-14,1.5,0,.35,3,44,concrete);
-box(14,1.5,0,.35,3,44,concrete);
-box(0,1.5,-22,28,3,.35,concrete);
-box(0,1.5,22,28,3,.35,concrete);
+box(0,-.15,0,28,.3,44,mats.floor,false);
+box(0,3.3,0,28,.3,44,mats.ceiling,false);
+box(-14,1.5,0,.3,3,44,mats.wall);
+box(14,1.5,0,.3,3,44,mats.wall);
+box(0,1.5,-22,28,3,.3,mats.wall);
+box(0,1.5,22,28,3,.3,mats.wall);
 
-// Central corridor walls, with room entrances
-function wallAlongX(x,z1,z2,gaps){
- let current=z1;
- for(const g of gaps.sort((a,b)=>a[0]-b[0])){
-  if(g[0]>current)box(x,1.5,(current+g[0])/2,.25,3,g[0]-current,oldPaint);
-  current=g[1];
+// Main corridor partitions and room openings
+function longWall(x,gaps){
+ let start=-22;
+ for(const gap of gaps){
+  if(gap[0]>start)box(x,1.5,(start+gap[0])/2,.25,3,gap[0]-start,mats.wall);
+  start=gap[1];
  }
- if(current<z2)box(x,1.5,(current+z2)/2,.25,3,z2-current,oldPaint);
+ if(start<22)box(x,1.5,(start+22)/2,.25,3,22-start,mats.wall);
 }
-const doors=[[-19,-16],[-12,-9],[-5,-2],[2,5],[9,12],[16,19]];
-wallAlongX(-3,-22,22,doors.map(x=>[...x]));
-wallAlongX(3,-22,22,doors.map(x=>[...x]));
+const gaps=[[-20,-17],[-13,-10],[-6,-3],[1,4],[8,11],[15,18]];
+longWall(-3,gaps);
+longWall(3,gaps);
 
-// Room dividing walls
-function crossWall(z,x1,x2,gap){
- if(x1<gap[0])box((x1+gap[0])/2,1.5,z,gap[0]-x1,3,.25,oldPaint);
- if(gap[1]<x2)box((gap[1]+x2)/2,1.5,z,x2-gap[1],3,.25,oldPaint);
+function crossWall(z,leftGap,rightGap){
+ box((-14+leftGap[0])/2,1.5,z,leftGap[0]+14,3,.25,mats.wall);
+ box((leftGap[1]+3)/2,1.5,z,3-leftGap[1],3,.25,mats.wall);
+ box((3+rightGap[0])/2,1.5,z,rightGap[0]-3,3,.25,mats.wall);
+ box((rightGap[1]+14)/2,1.5,z,14-rightGap[1],3,.25,mats.wall);
 }
 for(const z of [-15,-8,-1,6,13,20]){
- crossWall(z,-14,-3,[-8,-6]);
- crossWall(z,3,14,[6,8]);
+ crossWall(z,[-8,-6],[6,8]);
 }
 
-// Room signs
+// Department signboards
 function sign(text,x,y,z,rotation=0){
- const canvas=document.createElement('canvas');
- canvas.width=512;canvas.height=128;
- const ctx=canvas.getContext('2d');
- ctx.fillStyle='#26352e';ctx.fillRect(0,0,512,128);
- ctx.strokeStyle='#c6c5ad';ctx.lineWidth=7;ctx.strokeRect(5,5,502,118);
- ctx.fillStyle='#f0eee0';ctx.font='bold 38px Arial';
+ const c=document.createElement('canvas');
+ c.width=512;c.height=128;
+ const ctx=c.getContext('2d');
+ ctx.fillStyle='#254333';ctx.fillRect(0,0,512,128);
+ ctx.strokeStyle='#e6dfc6';ctx.lineWidth=7;ctx.strokeRect(5,5,502,118);
+ ctx.fillStyle='white';ctx.font='bold 36px Arial';
  ctx.textAlign='center';ctx.textBaseline='middle';
  ctx.fillText(text,256,65);
- const texture=new THREE.CanvasTexture(canvas);
- const mesh=new THREE.Mesh(new THREE.PlaneGeometry(3, .75),new THREE.MeshBasicMaterial({map:texture}));
- mesh.position.set(x,y,z);mesh.rotation.y=rotation;
- scene.add(mesh);
+ const texture=new THREE.CanvasTexture(c);
+ const m=new THREE.Mesh(new THREE.PlaneGeometry(3,.75),new THREE.MeshBasicMaterial({map:texture}));
+ m.position.set(x,y,z);m.rotation.y=rotation;scene.add(m);
 }
+sign('GENERAL HOSPITAL ONITSHA',0,2.6,19.8);
+sign('RECEPTION / REGISTRATION',0,2.6,12,Math.PI);
+sign('OUTPATIENT DEPARTMENT',-3.2,2.5,9,Math.PI/2);
+sign('EMERGENCY UNIT',3.2,2.5,2,-Math.PI/2);
+sign('MALE WARD',-3.2,2.5,-5,Math.PI/2);
+sign('FEMALE WARD',3.2,2.5,-12,-Math.PI/2);
+sign('LABORATORY',-3.2,2.5,-19,Math.PI/2);
+sign('PHARMACY',3.2,2.5,-19,-Math.PI/2);
 
-// Department signs
-sign('GENERAL HOSPITAL ONITSHA',0,2.6,19.7);
-sign('RECEPTION / REGISTRATION',0,2.5,13,Math.PI);
-sign('OUTPATIENT DEPARTMENT',-3.3,2.5,10,Math.PI/2);
-sign('EMERGENCY UNIT',3.3,2.5,3,-Math.PI/2);
-sign('MALE WARD',-3.3,2.5,-4,Math.PI/2);
-sign('FEMALE WARD',3.3,2.5,-11,-Math.PI/2);
-sign('LABORATORY',-3.3,2.5,-18,Math.PI/2);
-sign('PHARMACY',3.3,2.5,-18,-Math.PI/2);
-
-// Hospital reception desk
-box(0,.65,11,4,.9,1.1,wood);
-box(0,1.15,11,.5,.12,.15,metal);
+// Reception desk
+box(0,.65,10,4,.9,1,mats.wood);
+box(0,1.15,10,.4,.12,.12,mats.metal);
 
 // Waiting room chairs
-for(let z of [14,16]){
- for(let x of [-1.8,1.8]){
-  box(x,.5,z,.8,.12,.8,metal);
-  box(x,.9,z+.32,.8,.8,.12,metal,false);
+for(const z of [13,15]){
+ for(const x of [-1.7,1.7]){
+  box(x,.48,z,.75,.12,.75,mats.metal);
+  box(x,.9,z+.3,.75,.75,.12,mats.metal,false);
  }
 }
 
-// Hospital beds in wards
+// Hospital beds
 function bed(x,z){
- box(x,.55,z,1.8,.18,2,metal);
- box(x,.72,z,1.6,.15,1.65,white,false);
- box(x,.9,z-.85,1.8,.4,.12,white,false);
+ box(x,.5,z,1.8,.18,2,mats.metal);
+ box(x,.68,z,1.6,.12,1.7,mats.white,false);
+ box(x,.87,z-.85,1.8,.38,.12,mats.white,false);
  for(const dx of [-.7,.7])for(const dz of [-.7,.7]){
-  box(x+dx,.25,z+dz,.07,.5,.07,metal,false);
+  box(x+dx,.23,z+dz,.07,.46,.07,mats.metal,false);
  }
 }
-bed(-8,-4);
-bed(-11,-4);
-bed(8,-11);
-bed(11,-11);
-bed(-8,3);
-bed(11,3);
+bed(-8,-4);bed(-11,-4);
+bed(8,-11);bed(11,-11);
+bed(-8,3);bed(11,3);
 
-// Cabinets and equipment
-box(-12,1,-2,1,2,.8,metal);
-box(12,1,-9,1,2,.8,metal);
-box(-12,.7,-18,1.1,1.4,.8,metal);
-box(11,.7,-17,1.2,1.4,.8,metal);
+// Cabinets
+box(-12,1,-3,1,2,.8,mats.metal);
+box(12,1,-10,1,2,.8,mats.metal);
+box(-12,.7,-18,1.1,1.4,.8,mats.metal);
+box(11,.7,-17,1.2,1.4,.8,mats.metal);
 
-// Hospital generator room equipment
-box(10,.8,16,2,1.6,1.5,metal);
-box(10,1.7,16,1.5,.15,1.1,dark);
+// Generator room equipment
+box(10,.8,16,2,1.6,1.5,mats.metal);
+box(10,1.7,16,1.5,.15,1.1,mats.dark);
 sign('GENERATOR ROOM',10,2.5,14.8);
 
-// Ceiling lights
-const flicker=[];
+// Emergency ceiling lamps
+const lamps=[];
 for(let z=18;z>-21;z-=4){
- const lamp=new THREE.PointLight(0xb3c2ae,1.1,7);
- lamp.position.set(0,2.85,z);
- scene.add(lamp);
- flicker.push(lamp);
- box(0,3,z,.8,.08,.35,white,false);
+ const l=new THREE.PointLight(0xffe8bd,2.1,9);
+ l.position.set(0,2.8,z);
+ scene.add(l);lamps.push(l);
+ const bulb=new THREE.Mesh(new THREE.BoxGeometry(.8,.08,.35),
+ new THREE.MeshBasicMaterial({color:0xffe6a5}));
+ bulb.position.set(0,3,z);scene.add(bulb);
 }
 
 // Windows
 for(const z of [-18,-11,-4,3,10,17]){
- for(const x of [-13.78,13.78]){
-  const windowMat=new THREE.MeshBasicMaterial({color:0x101b20});
-  const win=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),windowMat);
-  win.position.set(x,2,z);
-  win.rotation.y=x<0?Math.PI/2:-Math.PI/2;
-  scene.add(win);
+ for(const x of [-13.8,13.8]){
+  const w=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),
+  new THREE.MeshBasicMaterial({color:0x253d42}));
+  w.position.set(x,2,z);
+  w.rotation.y=x<0?Math.PI/2:-Math.PI/2;
+  scene.add(w);
  }
 }
 
-// Blood stains
-for(let i=0;i<12;i++){
- const stain=new THREE.Mesh(new THREE.CircleGeometry(.2+Math.random()*.35,16),red);
- stain.rotation.x=-Math.PI/2;
- stain.position.set((Math.random()-.5)*5,.012,Math.random()*30-12);
- stain.scale.y=.7;
- scene.add(stain);
+// ---------------- EXIT ----------------
+
+const exitDoor=box(0,1.5,21.7,2.4,2.8,.3,mats.metal);
+
+// ---------------- COLLECTIBLES ----------------
+
+function glowingItem(x,z,color,label){
+ const group=new THREE.Group();
+ const orb=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),
+ new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.8}));
+ orb.position.y=.65;group.add(orb);
+ const light=new THREE.PointLight(color,2.3,4);
+ light.position.y=.8;group.add(light);
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(.35,.35,.08,16),
+ new THREE.MeshStandardMaterial({color:0x454b43}));
+ base.position.y=.05;group.add(base);
+ group.position.set(x,0,z);
+ scene.add(group);
+ return {group,x,z,label};
 }
 
-// Exit door
-const exitDoor=box(0,1.5,-21.7,2.4,2.8,.3,metal);
+const key=glowingItem(10,-18,0xffd23e,'PHARMACY KEY');
+const items=[
+ {data:glowingItem(-10,4,0x57e4a0,'OKPA + COKE'),type:'strength',taken:false},
+ {data:glowingItem(10,-5,0xffa64d,'MAMA TOLU MOI MOI'),type:'speed',taken:false},
+ {data:glowingItem(-10,-17,0xb38aff,'AGBO JEDI'),type:'invisibility',taken:false}
+];
 
-// Pharmacy key
-const key=new THREE.Group();
-const ring=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,8,20),material(0xd6ad4b));
-key.add(ring);
-const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.4,.07),material(0xd6ad4b));
-shaft.position.y=-.24;
-key.add(shaft);
-key.position.set(10,.8,-18);
-scene.add(key);
-const keyLight=new THREE.PointLight(0xe9b94b,2,4);
-keyLight.position.copy(key.position);
-scene.add(keyLight);
+// ---------------- MONSTER ----------------
 
-// Monster
 const monster=new THREE.Group();
-const body=new THREE.Mesh(new THREE.BoxGeometry(.75,1.5,.5),dark);
+const body=new THREE.Mesh(new THREE.BoxGeometry(.8,1.5,.55),mats.dark);
 body.position.y=.95;monster.add(body);
-const head=new THREE.Mesh(new THREE.SphereGeometry(.34,12,12),material(0x171717));
+const head=new THREE.Mesh(new THREE.SphereGeometry(.35,16,12),
+new THREE.MeshStandardMaterial({color:0x292322}));
 head.position.y=1.9;monster.add(head);
-for(const x of [-.14,.14]){
- const eye=new THREE.Mesh(new THREE.SphereGeometry(.06,8,8),new THREE.MeshBasicMaterial({color:0xff0000}));
- eye.position.set(x,1.95,-.29);monster.add(eye);
+for(const x of [-.15,.15]){
+ const eye=new THREE.Mesh(new THREE.SphereGeometry(.06,8,8),
+ new THREE.MeshBasicMaterial({color:0xff0000}));
+ eye.position.set(x,1.95,-.3);monster.add(eye);
 }
 monster.position.set(-10,0,-4);
 scene.add(monster);
 
-let started=false,hasKey=false,won=false,lost=false;
-let lightOn=true,running=false;
-let yaw=0,pitch=0;
-const pressed={},touch={};
-let messageTime=0;
-const clock=new THREE.Clock();
+// ---------------- GAME STATE ----------------
 
-function message(t,d=3){
- document.getElementById('msg').textContent=t;
- messageTime=d;
+let started=false,hasKey=false,gameOver=false,won=false;
+let health=100,stamina=100;
+let yaw=0,pitch=0,lightOn=true,running=false;
+let invisible=0,speedBoost=0;
+let strengthBoost=0;
+const pressed={},touch={};
+const inventory=[];
+const clock=new THREE.Clock();
+let messageTime=0;
+let damageCooldown=0;
+
+function say(text,time=2.5){
+ document.getElementById('message').textContent=text;
+ messageTime=time;
 }
 
-document.getElementById('start').onclick=()=>{
+function startGame(){
  started=true;
  document.getElementById('menu').style.display='none';
  document.getElementById('hud').style.display='block';
- if(matchMedia('(pointer:fine)').matches)renderer.domElement.requestPointerLock();
- message('WELCOME TO GENERAL HOSPITAL ONITSHA.',4);
-};
+ if(matchMedia('(pointer:fine)').matches){
+ renderer.domElement.requestPointerLock?.();
+ }
+ say('WELCOME TO GENERAL HOSPITAL ONITSHA.',4);
+}
+document.getElementById('start').onclick=startGame;
 
+// Keyboard
 document.addEventListener('keydown',e=>{
  pressed[e.code]=true;
  if(e.code==='KeyF')toggleLight();
  if(e.code==='KeyE')interact();
- if(e.code.includes('Shift'))running=true;
+ if(e.code==='ShiftLeft'||e.code==='ShiftRight')running=true;
 });
 document.addEventListener('keyup',e=>{
  pressed[e.code]=false;
- if(e.code.includes('Shift'))running=false;
+ if(e.code==='ShiftLeft'||e.code==='ShiftRight')running=false;
 });
+
+// Mouse look
 document.addEventListener('mousemove',e=>{
  if(document.pointerLockElement===renderer.domElement){
  yaw-=e.movementX*.002;
  pitch-=e.movementY*.002;
- pitch=Math.max(-1.3,Math.min(1.3,pitch));
+ pitch=Math.max(-1.25,Math.min(1.25,pitch));
  }
 });
 
-// Touch look controls
+// Touch look
 let lastX=null,lastY=null;
 renderer.domElement.addEventListener('touchstart',e=>{
  lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
@@ -320,66 +378,201 @@ renderer.domElement.addEventListener('touchmove',e=>{
  const x=e.touches[0].clientX,y=e.touches[0].clientY;
  yaw-=(x-lastX)*.006;
  pitch-=(y-lastY)*.006;
- pitch=Math.max(-1.3,Math.min(1.3,pitch));
+ pitch=Math.max(-1.25,Math.min(1.25,pitch));
  lastX=x;lastY=y;
 },{passive:true});
 renderer.domElement.addEventListener('touchend',()=>{
  lastX=null;lastY=null;
 });
 
+// Touch buttons
 function bind(id,name){
  const b=document.getElementById(id);
- b.addEventListener('pointerdown',e=>{e.preventDefault();touch[name]=true});
+ b.addEventListener('pointerdown',e=>{
+ e.preventDefault();touch[name]=true;
+ });
  b.addEventListener('pointerup',()=>touch[name]=false);
  b.addEventListener('pointerleave',()=>touch[name]=false);
+ b.addEventListener('pointercancel',()=>touch[name]=false);
 }
-bind('up','forward');
-bind('down','back');
-bind('left','left');
-bind('right','right');
-bind('run','run');
-document.getElementById('run').onpointerdown=()=>running=true;
-document.getElementById('run').onpointerup=()=>running=false;
-document.getElementById('run').onpointerleave=()=>running=false;
-document.getElementById('light').onclick=toggleLight;
-document.getElementById('use').onclick=interact;
+bind('up','forward');bind('down','back');
+bind('left','left');bind('right','right');
+document.getElementById('run').addEventListener('pointerdown',()=>running=true);
+document.getElementById('run').addEventListener('pointerup',()=>running=false);
+document.getElementById('run').addEventListener('pointerleave',()=>running=false);
+document.getElementById('flash').onclick=toggleLight;
+document.getElementById('interact').onclick=interact;
 
 function toggleLight(){
  lightOn=!lightOn;
- flashlight.intensity=lightOn?95:0;
- message(lightOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1);
+ flashlight.intensity=lightOn?110:0;
+ document.getElementById('lightText').textContent=lightOn?'ON':'OFF';
+ say(lightOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1);
 }
 
-function interact(){
- if(!started)return;
- if(!hasKey&&camera.position.distanceTo(key.position)<2.5){
- hasKey=true;
- scene.remove(key);scene.remove(keyLight);
- document.getElementById('objective').textContent='OBJECTIVE: Escape through the main entrance';
- message('PHARMACY KEY FOUND! GET TO THE MAIN ENTRANCE!',4);
- return;
- }
- if(camera.position.distanceTo(exitDoor.position)<3){
- if(hasKey){
- won=true;
- document.getElementById('menu').style.display='flex';
- document.getElementById('hud').style.display='none';
- document.getElementById('story').innerHTML='YOU ESCAPED GENERAL HOSPITAL ONITSHA.<br><br>But the night is not over...';
- document.getElementById('start').textContent='PLAY AGAIN';
- }else message('THE MAIN ENTRANCE IS LOCKED. FIND THE KEY.',3);
- }else message('NOTHING TO INTERACT WITH.',1);
-}
+// ---------------- COLLISION ----------------
 
 function blocked(x,z){
- if(x<-13||x>13||z>21||z<-21)return true;
+ if(x<-13||x>13||z<-21||z>21)return true;
  for(const o of obstacles){
- if(Math.abs(x-o.x)<o.w/2+.35&&Math.abs(z-o.z)<o.d/2+.35)return true;
+ if(Math.abs(x-o.x)<o.w/2+.38&&Math.abs(z-o.z)<o.d/2+.38)return true;
  }
  return false;
 }
 
+// ---------------- INTERACTIONS ----------------
+
+function nearestItem(){
+ let best=null,bestDist=2.2;
+ if(!hasKey){
+ const d=Math.hypot(camera.position.x-key.x,camera.position.z-key.z);
+ if(d<bestDist){best={type:'key',data:key};bestDist=d;}
+ }
+ for(const item of items){
+ if(item.taken)continue;
+ const d=Math.hypot(camera.position.x-item.data.x,camera.position.z-item.data.z);
+ if(d<bestDist){best=item;bestDist=d;}
+ }
+ return best;
+}
+
+function interact(){
+ if(!started||gameOver||won)return;
+ const found=nearestItem();
+ if(found){
+ if(found.type==='key'){
+ hasKey=true;
+ scene.remove(key.group);
+ document.getElementById('objective').textContent='OBJECTIVE: Escape through the main entrance';
+ say('PHARMACY KEY FOUND! FIND THE MAIN EXIT!',4);
+ }else{
+ const item=found.data;
+ found.taken=true;
+ scene.remove(item.group);
+ inventory.push(item.label);
+ if(found.type==='strength'){
+ health=Math.min(100,health+25);
+ stamina=100;
+ strengthBoost=15;
+ say('OKPA + COKE! STRENGTH AND STAMINA RESTORED!',3);
+ }else if(found.type==='speed'){
+ speedBoost=25;
+ say('MAMA TOLU MOI MOI! SPEED BOOST ACTIVATED!',3);
+ }else if(found.type==='invisibility'){
+ invisible=15;
+ say('AGBO JEDI! YOU ARE INVISIBLE FOR 15 SECONDS!',3);
+ }
+ updateInventory();
+ }
+ return;
+ }
+ if(Math.hypot(camera.position.x-exitDoor.position.x,camera.position.z-exitDoor.position.z)<3){
+ if(hasKey){
+ winGame();
+ }else say('THE EXIT IS LOCKED. FIND THE PHARMACY KEY!',3);
+ }else say('NOTHING TO COLLECT HERE.',1);
+}
+
+function updateInventory(){
+ document.getElementById('items').textContent=inventory.length?inventory.join(' • '):'Empty';
+}
+
+// ---------------- UI ----------------
+
+function updateUI(){
+ document.getElementById('healthText').textContent=Math.round(health);
+ document.getElementById('staminaText').textContent=Math.round(stamina);
+ document.getElementById('healthFill').style.width=health+'%';
+ document.getElementById('staminaFill').style.width=stamina+'%';
+
+ const powers=[];
+ if(strengthBoost>0)powers.push('💪 Strength '+Math.ceil(strengthBoost)+'s');
+ if(speedBoost>0)powers.push('⚡ Moi Moi speed '+Math.ceil(speedBoost)+'s');
+ if(invisible>0)powers.push('👻 Agbo invisibility '+Math.ceil(invisible)+'s');
+ document.getElementById('power').textContent=powers.join(' | ');
+}
+
+// ---------------- MAP ----------------
+
+const mapCanvas=document.getElementById('map');
+const ctx=mapCanvas.getContext('2d');
+
+function mapPoint(x,z){
+ return {x:110+x*4.1,y:110+z*4.1};
+}
+
+function drawMap(){
+ ctx.clearRect(0,0,220,220);
+ ctx.fillStyle='#15231c';
+ ctx.fillRect(0,0,220,220);
+
+ // Building outline
+ ctx.strokeStyle='#c2c9b8';ctx.lineWidth=5;
+ ctx.strokeRect(22,19,176,182);
+
+ // Corridors and room walls
+ ctx.strokeStyle='#879386';ctx.lineWidth=4;
+ ctx.beginPath();
+ ctx.moveTo(98,19);ctx.lineTo(98,201);
+ ctx.moveTo(122,19);ctx.lineTo(122,201);
+ ctx.moveTo(22,49);ctx.lineTo(198,49);
+ ctx.moveTo(22,78);ctx.lineTo(198,78);
+ ctx.moveTo(22,107);ctx.lineTo(198,107);
+ ctx.moveTo(22,136);ctx.lineTo(198,136);
+ ctx.moveTo(22,165);ctx.lineTo(198,165);
+ ctx.stroke();
+
+ // Key
+ if(!hasKey){
+ const p=mapPoint(key.x,key.z);
+ ctx.fillStyle='#ffdb38';
+ ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();
+ }
+
+ // Power-ups
+ for(const item of items){
+ if(item.taken)continue;
+ const p=mapPoint(item.data.x,item.data.z);
+ ctx.fillStyle='#48df8c';
+ ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();
+ }
+
+ // Monster
+ if(invisible<=0){
+ const p=mapPoint(monster.position.x,monster.position.z);
+ ctx.fillStyle='#ff3939';
+ ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();
+ }
+
+ // Player
+ const p=mapPoint(camera.position.x,camera.position.z);
+ ctx.save();
+ ctx.translate(p.x,p.y);
+ ctx.rotate(yaw);
+ ctx.fillStyle='#54c7ff';
+ ctx.beginPath();
+ ctx.moveTo(0,-9);ctx.lineTo(-6,7);ctx.lineTo(6,7);
+ ctx.closePath();ctx.fill();
+ ctx.restore();
+}
+
+// ---------------- GAME LOOP ----------------
+
+function endGame(title,text){
+ gameOver=true;
+ document.exitPointerLock?.();
+ document.getElementById('endTitle').textContent=title;
+ document.getElementById('endText').textContent=text;
+ document.getElementById('overlay').style.display='flex';
+}
+
+function winGame(){
+ won=true;
+ endGame('YOU ESCAPED!', 'You survived General Hospital Onitsha. But something followed you home...');
+}
+
 function update(dt){
- if(!started||won||lost)return;
+ if(!started||gameOver||won)return;
 
  camera.rotation.order='YXZ';
  camera.rotation.y=yaw;
@@ -387,71 +580,4 @@ function update(dt){
 
  const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
  const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
- const move=new THREE.Vector3();
-
- if(pressed.KeyW||pressed.ArrowUp||touch.forward)move.add(forward);
- if(pressed.KeyS||pressed.ArrowDown||touch.back)move.sub(forward);
- if(pressed.KeyA||pressed.ArrowLeft||touch.left)move.sub(right);
- if(pressed.KeyD||pressed.ArrowRight||touch.right)move.add(right);
-
- if(move.lengthSq()>0){
- move.normalize().multiplyScalar((running?5:2.8)*dt);
- let nx=camera.position.x+move.x;
- let nz=camera.position.z+move.z;
- if(!blocked(nx,camera.position.z))camera.position.x=nx;
- if(!blocked(camera.position.x,nz))camera.position.z=nz;
- }
-
- camera.position.y=1.7;
- flashlight.position.copy(camera.position);
- const direction=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
- flashlight.target.position.copy(camera.position).add(direction.multiplyScalar(5));
-
- // Monster follows the player
- const distance=monster.position.distanceTo(camera.position);
- if(distance>1.3){
- const direction=new THREE.Vector3(camera.position.x-monster.position.x,0,camera.position.z-monster.position.z).normalize();
- monster.position.add(direction.multiplyScalar(1.05*dt));
- monster.rotation.y=Math.atan2(direction.x,direction.z);
- }
-
- document.getElementById('danger').style.borderWidth=distance<10?(10-distance)+'px':'0px';
-
- // Unstable hospital lighting
- for(const l of flicker){
- if(Math.random()<.018)l.intensity=Math.random()<.3?.08:1.1;
- }
-
- key.rotation.y+=dt;
- if(messageTime>0){
- messageTime-=dt;
- if(messageTime<=0)document.getElementById('msg').textContent='';
- }
-
- if(distance<1.3){
- lost=true;
- message('IT FOUND YOU. YOU DID NOT SURVIVE.',10);
- setTimeout(()=>{
- document.getElementById('menu').style.display='flex';
- document.getElementById('hud').style.display='none';
- document.getElementById('story').innerHTML='THE NIGHT HAS CLAIMED YOU.<br>THE HOSPITAL IS STILL WAITING.';
- document.getElementById('start').textContent='TRY AGAIN';
- },3500);
- }
-}
-
-function animate(){
- requestAnimationFrame(animate);
- update(Math.min(clock.getDelta(),.05));
- renderer.render(scene,camera);
-}
-animate();
-
-addEventListener('resize',()=>{
- camera.aspect=innerWidth/innerHeight;
- camera.updateProjectionMatrix();
- renderer.setSize(innerWidth,innerHeight);
-});
-</script>
-</body>
-</html>
+ const move=new THREE.Vector3(
