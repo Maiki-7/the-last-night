@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>THE LAST NIGHT - Google Test</title>
+  <style>
+    body {
+      background: #10131b;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 25px;
+      text-align: center;
+    }
+    button {
+      padding: 15px 22px;
+      margin: 12px;
+      border: 0;
+      border-radius: 8px;
+      background: #b52b38;
+      color: white;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #222938;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <h1>THE LAST NIGHT</h1>
+  <h2>Google Account Test</h2>
+  <p>Connect a Google account to your guest player.</p>
+  <button id="testButton">CONTINUE WITH GOOGLE</button>
+  <div id="result">Waiting for test...</div>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      GoogleAuthProvider,
+      linkWithPopup,
+      signInWithPopup
+    } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc
+    } from
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0a0dkl5bs9vTnEsi6rw9FzOOXKssQQl0",
+      authDomain: "the-last-night-1bf0f.firebaseapp.com",
+      projectId: "the-last-night-1bf0f",
+      storageBucket: "the-last-night-1bf0f.firebasestorage.app",
+      messagingSenderId: "637836335674",
+      appId: "1:637836335674:web:75d6126c86d06ea0cff303"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    const button = document.getElementById("testButton");
+    const result = document.getElementById("result");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      result.textContent = "Connecting to Google...";
+
+      try {
+        let user = auth.currentUser;
+
+        if (!user) {
+          const guest = await signInAnonymously(auth);
+          user = guest.user;
+        }
+
+        const oldUid = user.uid;
+
+        if (user.isAnonymous) {
+          const linked = await linkWithPopup(user, provider);
+          user = linked.user;
+        } else {
+          const signedIn = await signInWithPopup(auth, provider);
+          user = signedIn.user;
+        }
+
+        const playerRef = doc(db, "players", user.uid);
+
+        await setDoc(playerRef, {
+          googleAccountConnected: true,
+          email: user.email || "",
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        const saved = await getDoc(playerRef);
+
+        result.textContent =
+          "SUCCESS! Google sign-in worked and player data was saved. " +
+          "Original guest ID: " + oldUid +
+          " | Current player ID: " + user.uid +
+          " | Email: " + (user.email || "Not available") +
+          " | Database saved: " + saved.exists();
+
+      } catch (error) {
+        result.textContent =
+          "TEST FAILED: " + error.code + " - " + error.message;
+      }
+
+      button.disabled = false;
+    });
+  </script>
+</body>
+</html>
