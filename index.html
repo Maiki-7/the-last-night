@@ -1281,6 +1281,7 @@ function animate() {
     if (started && !gameOver && !won) {
         updatePlayer(delta);
         updateMonsters(delta);
+     monsterActors.update(delta);
 
         if (health <= 0) {
             health = 0;
