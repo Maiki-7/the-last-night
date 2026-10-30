@@ -581,3 +581,75 @@ function update(dt){
  const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
  const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
  const move=new THREE.Vector3(
+  
+ (pressed.KeyD||pressed.ArrowRight||touch.right ? 1 : 0) -
+ (pressed.KeyA||pressed.ArrowLeft||touch.left ? 1 : 0),
+ 0,
+ (pressed.KeyW||pressed.ArrowUp||touch.forward ? 1 : 0) -
+ (pressed.KeyS||pressed.ArrowDown||touch.back ? 1 : 0)
+ );
+ const forwardAmount=move.z;
+ const sideAmount=move.x;
+ move.copy(forward).multiplyScalar(forwardAmount).addScaledVector(right,sideAmount);
+ if(move.lengthSq()>0) move.normalize();
+
+ const boost=speedBoost>0?1.6:1;
+ const pace=(running&&stamina>0?5:2.8)*boost;
+ if(running&&move.lengthSq()>0) stamina=Math.max(0,stamina-25*dt);
+ else stamina=Math.min(100,stamina+12*dt);
+
+ const nx=camera.position.x+move.x*pace*dt;
+ const nz=camera.position.z+move.z*pace*dt;
+ if(!blocked(nx,camera.position.z))camera.position.x=nx;
+ if(!blocked(camera.position.x,nz))camera.position.z=nz;
+
+ const dx=camera.position.x-monster.position.x;
+ const dz=camera.position.z-monster.position.z;
+ const dist=Math.hypot(dx,dz);
+
+ if(dist>1.3){
+  const speed=invisible>0?.3:1.1;
+  const mx=monster.position.x+dx/dist*speed*dt;
+  const mz=monster.position.z+dz/dist*speed*dt;
+  if(!blocked(mx,monster.position.z))monster.position.x=mx;
+  if(!blocked(monster.position.x,mz))monster.position.z=mz;
+ }else if(invisible<=0&&damageCooldown<=0){
+  health=Math.max(0,health-12);
+  damageCooldown=1.2;
+  say('THE CREATURE HAS FOUND YOU!',2);
+ }
+
+ damageCooldown=Math.max(0,damageCooldown-dt);
+ invisible=Math.max(0,invisible-dt);
+ speedBoost=Math.max(0,speedBoost-dt);
+ strengthBoost=Math.max(0,strengthBoost-dt);
+
+ updateUI();
+ drawMap();
+}
+
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),0.05);
+
+ update(dt);
+
+ flashlight.position.copy(camera.position);
+ flashlight.position.y-=.12;
+ const direction=new THREE.Vector3(0,0,-1).applyEuler(camera.rotation);
+ flashlight.target.position.copy(camera.position).add(direction.multiplyScalar(8));
+
+ renderer.render(scene,camera);
+}
+
+animate();
+
+window.addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
+
