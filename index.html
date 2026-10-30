@@ -728,12 +728,25 @@ function createMonster(kind,x,z){
  };
 }
 
-const monsters=[
- createMonster('madam',-10,-4),
- createMonster('bush',10,2),
- createMonster('ojuju',-10,-12)
+// NEW MONSTER SYSTEM
+const monsterActors = createMonsterActors(scene);
+const monsterAudio = createMonsterAudio();
+
+const monsterNames = [
+ 'Bush Baby',
+ 'Opiankwu',
+ 'Madam Koi-Koi'
 ];
 
+const monsters = monsterActors.actors.map((actor,index)=>({
+ kind:monsterNames[index],
+ group:actor.group,
+ speed:0.58,
+ stun:0,
+ phase:Math.random()*5,
+ homeX:actor.group.position.x,
+ homeZ:actor.group.position.z
+}));
 const saltButton=document.getElementById('saltButton');
  // ==========================================
 // PART 3: GAMEPLAY, MONSTERS, MAP AND ENDING
